@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить питомца</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+<h1>Добавить питомца</h1>
+<form th:action="@{/petOwner/dashboard/{userId}/addPet(userId=${userId})}" method="post" th:object="${pet}">
+    <label>Имя питомца: <input type="text" th:field="*{name}" required /></label><br/>
+    <label>Вид:
+        <select th:field="*{species}" required>
+            <option value="Кошка">Кошка</option>
+            <option value="Собака">Собака</option>
+        </select>
+    </label><br/>
+    <label>Порода: <input type="text" th:field="*{breed}" required /></label><br/>
+    <label>Размер:
+        <select th:field="*{size}" required>
+            <option value="Маленький">Маленький</option>
+            <option value="Средний">Средний</option>
+            <option value="Крупный">Крупный</option>
+        </select>
+    </label><br/>
+    <label>Возраст:
+        <select th:field="*{age}" required>
+            <option th:each="i : ${#numbers.sequence(1, 50)}" th:value="${i}" th:text="${i}"></option>
+        </select>
+        <select th:field="*{ageUnit}" required>
+            <option value="years">лет</option>
+            <option value="months">месяцев</option>
+        </select>
+    </label><br/>
+    <label>Пол:
+        <select th:field="*{gender}" required>
+            <option value="Девочка">Девочка</option>
+            <option value="Мальчик">Мальчик</option>
+        </select>
+    </label><br/>
+    <label>Кастрирован/стерилизован:
+        <select th:field="*{sterilized}" required>
+            <option value="true">Да</option>
+            <option value="false">Нет</option>
+        </select>
+    </label><br/>
+    <input type="submit" value="Добавить питомца" />
+</form>
+</body>
+</html>

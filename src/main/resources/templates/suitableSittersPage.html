@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подходящие ситтеры</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Подходящие ситтеры</h2>
+    <div class="row">
+        <!-- Вывод карточек ситтеров -->
+        <div th:each="sitter : ${sitters}" class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${sitter.name + ' ' + sitter.lastName}"></h5>
+                    <p class="card-text" th:text="${'Город: ' + sitter.city}"></p>
+                    <p class="card-text" th:text="${'Опыт: ' + sitter.experience}"></p>
+                    <p class="card-text" th:text="${'Питомцы: ' + sitter.acceptedPets}"></p>
+                    <p class="card-text" th:text="${'Свои питомцы: ' + (sitter.hasOwnPets ? 'Да' : 'Нет')}"></p>
+                    <p class="card-text" th:text="${'О себе: ' + sitter.bio}"></p>
+                    <p class="card-text" th:text="${'Часовая ставка: ' + sitter.hourlyRate}"></p>
+                    <p class="card-text" th:text="${'Суточная ставка: ' + sitter.dailyRate}"></p>
+
+                    <form th:action="@{/petOwner/dashboard/{userId}/chooseSitter/{requestId}/{sitterId}(userId=${userId}, requestId=${requestId}, sitterId=${sitter.id})}" method="post">
+                        <button type="submit" class="btn btn-primary">Выбрать</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Изменить доступность</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+<div class="container">
+  <h2>Изменить доступность</h2>
+  <form th:action="@{/petSitter/dashboard/changeAvailability}" method="post" th:object="${availability}">
+    <input type="hidden" name="userId" th:value="${userId}" />
+
+    <label for="availability">Выберите доступные даты:</label><br>
+    <input id="availability" name="availableDates" type="text" />
+
+    <button type="submit">Сохранить</button>
+  </form>
+</div>
+
+<script>
+    flatpickr("#availability", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        altInput: true,
+        minDate: "today"
+    });
+</script>
+</body>
+</html>

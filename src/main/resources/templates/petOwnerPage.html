@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Изображение пользователя и никнейм -->
+                <img src="/images/user-icon-1024x1024.png" class="rounded-circle" alt="User Icon" style="max-width: 50px;">
+                <span class="navbar-brand mb-0 h1 ml-2" th:text="${user.getUsername()}"></span>
+            </div>
+            <div class="col-md-9">
+                <!-- Имя, фамилия и город пользователя -->
+                <p class="mb-0" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></p>
+                <p class="mb-0" th:text="${user.getCity()}"></p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Блок с питомцами -->
+    <h3 class="mt-4">Мои питомцы</h3>
+    <div class="row">
+        <div th:if="${pets}" th:each="pet, iterStat : ${pets}" class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${pet.getName() + ' (' + pet.getSpecies().toLowerCase() + ')'}"></h5>
+                    <p class="card-text"><strong>Порода:</strong> <span th:text="${pet.getBreed().toLowerCase()}"></span></p>
+                    <p class="card-text"><strong>Возраст:</strong> <span th:text="${pet.getAge().toLowerCase()}"></span></p>
+                    <p class="card-text"><strong>Пол:</strong> <span th:text="${pet.getGender()}"></span></p>
+                    <p class="card-text"><strong>Кастрация/стерилизация:</strong> <span th:text="${pet.isSterilized() ? 'да' : 'нет'}"></span></p>
+                </div>
+            </div>
+        </div>
+        <div th:if="${pets == null || pets.isEmpty()}">
+            <p>Вы еще не добавили питомцев в свой список.</p>
+        </div>
+        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addPetForm(userId=${userId})}">Добавить питомца</a>
+    </div>
+
+    <!-- Блок с запросами на передержку -->
+    <h3 class="mt-4">Запросы на передержку</h3>
+    <div class="row">
+        <div th:if="${requests}" th:each="request : ${requests}" class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${request.getPetName()}"></h5>
+                    <p class="card-text"><strong>с:</strong> <span th:text="${request.getStartDate()}"></span></p>
+                    <p class="card-text"><strong>по:</strong> <span th:text="${request.getEndDate()}"></span></p>
+                    <p class="card-text"><strong>Можно с другими животными?</strong>
+                        <span th:text="${request.isOtherPetsAccepted() ? 'да' : 'нет'}"></span>
+                    </p>
+                    <p class="card-text"><strong>Желаемый опыт пет-ситтера:</strong> <span th:text="${request.getSitterExperience()}"></span></p>
+                    <p class="card-text"><strong>Пет-ситтер:</strong> <span th:text="${request.getSitterName()}"></span></p>
+                    <p class="card-text"><strong>Телефон пет-ситтера:</strong> <span th:text="${request.getSitterPhone()}"></span></p>
+                    <p class="card-text"><strong>Статус заявки:</strong>
+                        <span th:if="${request.getStatus().toString() == 'PENDING'}">ожидает рассмотрения</span>
+                        <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
+                        <span th:if="${request.getStatus().toString() == 'DECLINED'}">отклонена</span>
+                        <span th:if="${request.getStatus().toString() == 'PERSONAL'}">создан персональный запрос</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div th:if="${user.getRequests() == null || user.getRequests().isEmpty()}">
+            <p>У вас нет активных запросов на передержку.</p>
+        </div>
+        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addRequestForm(userId=${userId})}">Создать запрос</a>
+    </div>
+</div>
+</body>
+</html>

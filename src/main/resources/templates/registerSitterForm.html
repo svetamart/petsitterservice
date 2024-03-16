@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация пет-ситтера</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="mb-4">Форма регистрации для пет-ситтера</h2>
+
+    <form th:object="${sitterRequest}" th:action="@{/register/sitter}" method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Имя пользователя:</label>
+            <input type="text" class="form-control" id="username" th:field="*{username}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" class="form-control" id="password" th:field="*{password}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Имя:</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Фамилия:</label>
+            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="city" class="form-label">Город:</label>
+            <input type="text" class="form-control" id="city" th:field="*{city}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="experience" class="form-label">Опыт:</label>
+            <select class="form-select" id="experience" th:field="*{experience}" required>
+                <option value="Меньше года">Меньше года</option>
+                <option value="Больше 1 года">Больше 1 года</option>
+                <option value="Больше 3 лет">Больше 3 лет</option>
+                <option value="Больше 6 лет">Больше 6 лет</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Принимаемые виды домашних животных:</label>
+            <div>
+                <input type="checkbox" id="cats" name="acceptedPets" value="Кошки" th:field="*{acceptedPets}"/>
+                <label for="cats">Кошки</label>
+            </div>
+            <div>
+                <input type="checkbox" id="dogs" name="acceptedPets" value="Собаки" th:field="*{acceptedPets}"/>
+                <label for="dogs">Собаки</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Размеры принимаемых собак:</label>
+            <div>
+                <input type="checkbox" id="none" name="acceptedDogSizes" value="Не принимаю собак" th:field="*{acceptedDogSizes}"/>
+                <label for="small">Не принимаю собак</label>
+            </div>
+            <div>
+                <input type="checkbox" id="small" name="acceptedDogSizes" value="Маленькие" th:field="*{acceptedDogSizes}"/>
+                <label for="small">Маленькие</label>
+            </div>
+            <div>
+                <input type="checkbox" id="medium" name="acceptedDogSizes" value="Средние" th:field="*{acceptedDogSizes}"/>
+                <label for="medium">Средние</label>
+            </div>
+            <div>
+                <input type="checkbox" id="large" name="acceptedDogSizes" value="Крупные" th:field="*{acceptedDogSizes}"/>
+                <label for="large">Крупные</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Есть ли свои домашние животные:</label>
+            <div>
+                <input type="radio" id="hasOwnPetsYes" name="hasOwnPets" value="true" th:field="*{hasOwnPets}"/>
+                <label for="hasOwnPetsYes">Да</label>
+            </div>
+            <div>
+                <input type="radio" id="hasOwnPetsNo" name="hasOwnPets" value="false" th:field="*{hasOwnPets}"/>
+                <label for="hasOwnPetsNo">Нет</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="bio" class="form-label">Биография:</label>
+            <textarea class="form-control" id="bio" th:field="*{bio}" rows="5" maxlength="5000" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Номер телефона:</label>
+            <input type="tel" class="form-control" id="phone" th:field="*{phone}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="hourlyRate" class="form-label">Почасовая ставка:</label>
+            <input type="number" class="form-control" id="hourlyRate" th:field="*{hourlyRate}" step="0.01" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="dailyRate" class="form-label">Суточная ставка:</label>
+            <input type="number" class="form-control" id="dailyRate" th:field="*{dailyRate}" step="0.01" required/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>

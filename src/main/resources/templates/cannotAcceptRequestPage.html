@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Cannot Accept Request</title>
+</head>
+<body>
+<h2>Не удалось принять заявку :(</h2>
+<p>Возможно, даты, указанные в заявке, уже заняты. Пожалуйста, проверьте ваш календарь.</p>
+<a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}">Вернуться в личный кабинет</a>
+</body>
+</html>

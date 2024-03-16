@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .register-container {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .jumbotron {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+    <h1 class="display-4">Регистрация</h1>
+</div>
+
+<div class="container register-container">
+    <p>Как вы хотите зарегистрироваться?</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form th:action="@{/register/sitter}" method="get">
+                <button type="submit" class="btn btn-success btn-block">Я пет-ситтер</button>
+            </form>
+            <p class="mt-2">Пет-ситтер - это человек, который берет на передержку домашних животных.
+                Заполните небольшую анкету, мы свяжемся с вами, чтобы подтвердить данные и учетную запись.
+                Затем вы сможете брать заказы.</p>
+        </div>
+        <div class="col-md-6">
+            <form th:action="@{/register/owner}" method="get">
+                <button type="submit" class="btn btn-primary btn-block">Я владелец</button>
+            </form>
+            <p class="mt-2">Для владельцев все просто - заполните анкету, добавьте своего питомца
+                и отправляйте заявку на передержку.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>

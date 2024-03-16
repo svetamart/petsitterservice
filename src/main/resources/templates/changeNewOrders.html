@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменить статус принятия новых заказов</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Изменить статус принятия новых заказов</h2>
+    <form action="/petSitter/dashboard/changeNewOrders" method="post">
+        <input type="hidden" name="userId" th:value="${userId}" />
+        <label for="newOrders">Принимать новых питомцев?</label><br>
+        <select id="newOrders" name="newOrders">
+            <option value="true" th:selected="${newOrders} == true">Да</option>
+            <option value="false" th:selected="${newOrders} == false">Нет</option>
+        </select><br>
+        <button type="submit">Сохранить</button>
+    </form>
+</div>
+</body>
+</html>

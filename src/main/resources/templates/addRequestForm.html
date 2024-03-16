@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрос на передержку</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+<h1>Новый запрос на передержку</h1>
+<form th:action="@{/petOwner/dashboard/{userId}/createRequest(userId=${userId})}" method="post" th:object="${request}">
+    <label>Выберите питомца:
+        <select th:field="*{petId}" required>
+            <option th:each="pet : ${user.pets}" th:value="${pet.id}">
+                <span th:text="${pet.name}"></span>
+            </option>
+        </select>
+    </label><br/>
+    <label>Дата начала: <input type="date" th:field="*{startDate}" required /></label><br/>
+    <label>Дата окончания: <input type="date" th:field="*{endDate}" required /></label><br/>
+    <label>Как вы относитесь к тому, что у ситтера могут быть собственные животные?
+        <select th:field="*{otherPetsAccepted}" required>
+            <option value="true">Не против</option>
+            <option value="false">Против</option>
+        </select>
+    </label><br/>
+    <label>Опыт ситтера:
+        <select th:field="*{sitterExperience}" required>
+            <option value="Неважно">Неважно</option>
+            <option value="Меньше года">Меньше года</option>
+            <option value="Больше 1 года">Больше 1 года</option>
+            <option value="Больше 3 лет">Больше 3 лет</option>
+            <option value="Больше 6 лет">Больше 6 лет</option>
+        </select>
+    </label><br/>
+    <label>Комментарии: <textarea th:field="*{comments}" rows="4" cols="50"></textarea></label><br/>
+    <input type="submit" value="Создать запрос" />
+</form>
+
+<!-- Если список питомцев пуст, показываем ссылку для добавления питомца -->
+<div th:if="${#lists.isEmpty(pets)}">
+    <a th:href="@{/petOwner/dashboard/{userId}/addPetForm(userId=${userId})}">Добавить питомца</a>
+</div>
+</body>
+</html>
