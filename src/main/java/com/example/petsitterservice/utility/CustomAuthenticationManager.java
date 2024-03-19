@@ -1,4 +1,4 @@
-package com.example.petsitterservice.config;
+package com.example.petsitterservice.utility;
 
 
 import com.example.petsitterservice.service.CustomUserDetailsService;

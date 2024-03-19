@@ -1,10 +1,9 @@
 package com.example.petsitterservice.service;
 
-import com.example.petsitterservice.controller.PetSitterController;
 import com.example.petsitterservice.model.*;
-import com.example.petsitterservice.model.dto.PersonalRequestDto;
 import com.example.petsitterservice.repository.PetBoardingRequestRepository;
 import com.example.petsitterservice.repository.PetSitterRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,12 +36,16 @@ public class PetSitterService {
         return petSitterRepository.findAll();
     }
 
-    public void addSitter(PetSitter sitter) {
+    public void saveSitter(PetSitter sitter) {
         petSitterRepository.save(sitter);
     }
 
     public PetSitter getById(Long id) {
         return petSitterRepository.findById(id).orElse(null);
+    }
+
+    public void deleteById(Long id) {
+        petSitterRepository.deleteById(id);
     }
 
     public void acceptRequest(Long requestId) {
@@ -124,7 +125,7 @@ public class PetSitterService {
         Pet pet = request.getPet();
         PetOwner user = request.getUser();
 
-        return allSitters.stream()
+        List<PetSitter> suitableSitters = allSitters.stream()
                 .filter(petSitter -> user.getCity().equals(petSitter.getCity()))
                 .filter(petSitter -> isDateRangeAvailable(petSitter.getAvailabilityDates(), startDate, endDate))
                 .filter(petSitter -> isSpeciesAccepted(petSitter, pet))
@@ -132,6 +133,12 @@ public class PetSitterService {
                 .filter(petSitter -> areOtherPetsAccepted(petSitter, request))
                 .filter(petSitter -> checkExperience(petSitter, request))
                 .collect(Collectors.toList());
+
+        if (suitableSitters.isEmpty()) {
+            request.setStatus(RequestStatus.UNPROCESSED);
+            requestRepository.save(request);
+        }
+        return suitableSitters;
     }
 
     private boolean isSpeciesAccepted(PetSitter petSitter, Pet pet) {
@@ -223,5 +230,24 @@ public class PetSitterService {
         petSitterRepository.save(user);
     }
 
+    public void activateAccount(Long userId) {
+        PetSitter petSitter = getById(userId);
+        if (petSitter != null) {
+            petSitter.setAccountEnabled(true);
+            petSitterRepository.save(petSitter);
+        } else {
+            throw new EntityNotFoundException("User with id " + userId + " not found");
+        }
+    }
+
+    public void deactivateAccount(Long userId) {
+        PetSitter petSitter = getById(userId);
+        if (petSitter != null) {
+            petSitter.setAccountEnabled(false);
+            petSitterRepository.save(petSitter);
+        } else {
+            throw new EntityNotFoundException("User with id " + userId + " not found");
+        }
+    }
 }
 

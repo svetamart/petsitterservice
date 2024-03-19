@@ -1,8 +1,7 @@
 package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.*;
-import com.example.petsitterservice.model.dto.PersonalRequestDto;
-import com.example.petsitterservice.model.dto.PetBoardingRequestDto;
+import com.example.petsitterservice.model.dto.*;
 
 import java.util.List;
 
@@ -36,11 +35,25 @@ public interface PetServiceMainFacade {
     void updateTakingNewOrders(Long id, boolean newOrders);
     void assignSitter (Long requestId, PetSitter sitter);
 
-    void addPet(Pet pet, PetOwner owner);
+    void addPet(PetDto pet, PetOwner owner);
 
     PetOwner getUserByUsername(String username);
 
     PetSitter getSitterByUsername(String username);
 
     void makePersonalRequest(PersonalRequestDto requestDto);
+
+    void deleteUserByRole(String userRole, Long userId);
+
+    void activateAccountByRole(String userRole, Long userId);
+
+    void deactivateAccountByRole(String userRole, Long userId);
+
+    PetOwnerDashboard createOwnerDashboard(PetOwner user);
+
+    PetSitterDashboard createSitterDashboard(PetSitter sitter);
+
+    void createReview(ReviewDto review);
+
+    void deleteReview(Long id);
 }

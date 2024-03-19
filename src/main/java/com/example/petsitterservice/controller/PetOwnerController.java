@@ -45,23 +45,7 @@ public class PetOwnerController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            logger.info(user.toString());
-            PetOwnerDashboard ownerDashboard = new PetOwnerDashboard();
-            ownerDashboard.setId(user.getId());
-            ownerDashboard.setUsername(user.getUsername());
-            ownerDashboard.setName(user.getName());
-            ownerDashboard.setLastName(user.getLastName());
-            ownerDashboard.setCity(user.getCity());
-            ownerDashboard.setPets(user.getPets());
-
-
-            List<PetBoardingRequest> requests = user.getRequests();
-            List<OwnerPageBoardingRequest> sitterPageRequests = new ArrayList<>();
-            for (PetBoardingRequest boardingRequest : requests) {
-                OwnerPageBoardingRequest ownerPageRequest = OwnerPageBoardingRequest.fromPetBoardingRequest(boardingRequest);
-                sitterPageRequests.add(ownerPageRequest);
-            }
-            ownerDashboard.setRequests(sitterPageRequests);
+            PetOwnerDashboard ownerDashboard = mainService.createOwnerDashboard(user);
             return new ResponseEntity<>(ownerDashboard, HttpStatus.OK);
         }
     }
@@ -87,19 +71,7 @@ public class PetOwnerController {
         } else {
             logger.info("adding pet");
             logger.info(pet.toString());
-            Pet newPet = new Pet();
-            newPet.setName(pet.getName());
-
-            String ageString = PetServiceMainFacadeImpl.formatAge(pet.getAge(), pet.getAgeUnit());
-            newPet.setAge(ageString);
-
-            newPet.setSize(pet.getSize());
-            newPet.setSpecies(pet.getSpecies());
-            newPet.setBreed(pet.getBreed());
-            newPet.setGender(pet.getGender());
-            newPet.setSterilized(pet.isSterilized());
-
-            mainService.addPet(newPet, user);
+            mainService.addPet(pet, user);
             return ResponseEntity.ok("Pet successfully added.");
         }
     }
@@ -141,5 +113,11 @@ public class PetOwnerController {
         logger.info("Creating personal request API");
         mainService.makePersonalRequest(requestDto);
         return new ResponseEntity<>("Personal request successfully created", HttpStatus.OK);
+    }
+
+    @PostMapping("/dashboard/addReview")
+    public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
+        mainService.createReview(review);
+        return ResponseEntity.ok("Review successfully added.");
     }
 }

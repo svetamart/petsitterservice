@@ -36,7 +36,7 @@ public class PetBoardingRequestService {
         request.setEndDate(requestDto.getEndDate());
         request.setSitterExperience(requestDto.getSitterExperience());
         request.setOtherPetsAccepted(requestDto.isOtherPetsAccepted());
-        request.setStatus(RequestStatus.PENDING);
+        request.setStatus(RequestStatus.UNPROCESSED);
         request.setComments(requestDto.getComments());
         petBoardingRequestRepository.save(request);
         user.addRequest(request);
@@ -61,9 +61,16 @@ public class PetBoardingRequestService {
                 .orElseThrow(() -> new NoSuchElementException("Request not found"));
         sitter.addRequest(request);
         request.setSitter(sitter);
+        request.setStatus(RequestStatus.PENDING);
         petBoardingRequestRepository.save(request);
         petSitterRepository.save(sitter);
-        logger.info(String.valueOf(requestId));
-        logger.info(sitter.getName());
+    }
+
+    public PetBoardingRequest getRequestById(Long requestId) {
+        return petBoardingRequestRepository.findById(requestId).orElse(null);
+    }
+
+    public void saveRequest(PetBoardingRequest request) {
+        petBoardingRequestRepository.save(request);
     }
 }

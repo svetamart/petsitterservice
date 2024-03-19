@@ -4,10 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Личный кабинет</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <link rel="stylesheet" th:href="@{/styles.css}" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -34,6 +39,9 @@
         <p class="mb-0" th:text="${user.getCity()}"></p>
       </div>
     </div>
+  </div>
+    <div class="col-md-9 text-right">
+      <a href="/logout" class="btn btn-outline-light">Выйти</a>
   </div>
 </nav>
 
@@ -98,6 +106,28 @@
     </div>
     <div th:if="${user.getRequests() == null || user.getRequests().isEmpty()}">
       <p>Вам еще не поступило запросов на передержку.</p>
+    </div>
+  </div>
+
+  <!-- Блок с отзывами -->
+  <h3 class="mt-4">Отзывы</h3>
+  <div class="row">
+    <div th:if="${sitterPageReviews}" th:each="review : ${sitterPageReviews}" class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${review.getUserName()}"></h5>
+          <p class="card-text">
+              <span th:each="i : ${#numbers.sequence(1, review.rating)}">
+              <img src="/images/star.png" alt="Star Icon" class="star-icon" style="display: inline-block;">
+              </span>
+          </p>
+          <p class="card-text">Питомец <span th:text="${review.getPetName()}"></span>, был в гостях с <span th:text="${review.getStartDate()}"></span> по <span th:text="${review.getEndDate()}"></span></p>
+          <p class="card-text" th:text="${review.getMessage()}"></p>
+        </div>
+      </div>
+    </div>
+    <div th:if="${sitterPageReviews == null || sitterPageReviews.isEmpty()}">
+      <p>У вас пока нет отзывов. Берите новые заказы, чтобы получать отзывы от владельцев питомцев.</p>
     </div>
   </div>
 </div>

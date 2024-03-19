@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Добавить отзыв</title>
+  <link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+<div class="container">
+  <h2>Добавить отзыв</h2>
+  <form th:action="@{/petOwner/dashboard/{userId}/{requestId}/addReview(userId=${userId}, requestId=${requestId})}" method="post" th:object="${review}">
+    <div class="form-group">
+      <label for="message">Отзыв:</label>
+      <textarea id="message" name="message" th:field="*{message}" class="form-control" rows="5" maxlength="3000" required></textarea>
+    </div>
+    <div class="form-group">
+      <label>Оценка:</label><br>
+      <input type="hidden" id="rating" name="rating" th:field="*{rating}">
+      <input type="radio" name="rating" value="1">
+      <label style="margin-right: 10px;">1</label>
+      <input type="radio" name="rating" value="2">
+      <label style="margin-right: 10px;">2</label>
+      <input type="radio" name="rating" value="3">
+      <label style="margin-right: 10px;">3</label>
+      <input type="radio" name="rating" value="4">
+      <label style="margin-right: 10px;">4</label>
+      <input type="radio" name="rating" value="5">
+      <label style="margin-right: 10px;">5</label>
+    </div>
+    <button type="submit">Отправить</button>
+  </form>
+</div>
+</body>
+</html>

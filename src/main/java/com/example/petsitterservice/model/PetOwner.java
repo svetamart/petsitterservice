@@ -46,6 +46,12 @@ public class PetOwner implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL)
     private List<PetBoardingRequest> requests = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean accountEnabled;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<PersonalRequest> personalRequests = new ArrayList<>();
+
 
     public PetOwner() {
     }
@@ -122,6 +128,23 @@ public class PetOwner implements UserDetails {
         this.pets.add(pet);
     }
 
+
+    public void setAccountEnabled(boolean accountEnabled) {
+        this.accountEnabled = accountEnabled;
+    }
+
+    public boolean isAccountEnabled() {
+        return accountEnabled;
+    }
+
+    public List<PersonalRequest> getPersonalRequests() {
+        return personalRequests;
+    }
+
+    public void addPersonalRequest(PersonalRequest personalRequest) {
+        this.personalRequests.add(personalRequest);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(getRole()));
@@ -146,4 +169,6 @@ public class PetOwner implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

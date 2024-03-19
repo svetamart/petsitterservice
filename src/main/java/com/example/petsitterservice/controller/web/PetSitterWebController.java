@@ -1,10 +1,7 @@
 package com.example.petsitterservice.controller.web;
 
 import com.example.petsitterservice.model.*;
-import com.example.petsitterservice.model.dto.AvailabilityRequest;
-import com.example.petsitterservice.model.dto.PersonalRequestDto;
-import com.example.petsitterservice.model.dto.PetSitterDashboard;
-import com.example.petsitterservice.model.dto.SitterPageBoardingRequest;
+import com.example.petsitterservice.model.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +44,12 @@ public class PetSitterWebController {
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetSitterDashboard user = responseEntity.getBody();
-            // logger.info(user.getAuthorities().toString());
             List<SitterPageBoardingRequest> sitterPageRequests = user.getRequests();
+            List<SitterPageReview> sitterReviews = user.getReviews();
 
             model.addAttribute("user", user);
             model.addAttribute("sitterPageRequests", sitterPageRequests != null ? sitterPageRequests : Collections.emptyList());
+            model.addAttribute("sitterPageReviews", sitterReviews != null ? sitterReviews : Collections.emptyList());
             return "petSitterPage";
         } else {
             return "error";
@@ -139,6 +137,7 @@ public class PetSitterWebController {
         }
         return "redirect:/petSitter/dashboard/" + userId;
     }
+
 }
 
 

@@ -62,7 +62,8 @@ public class PetSitter implements UserDetails {
     private String phone;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Review> reviews;
+    @JsonIgnore
+    private List<Review> reviews = new ArrayList<>();
 
 
     @ElementCollection
@@ -72,6 +73,11 @@ public class PetSitter implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<PetBoardingRequest> requests = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean accountEnabled;
+
+
 
     @Transient
     @JsonDeserialize(using = GrantedAuthorityDeserializer.class)
@@ -251,5 +257,13 @@ public class PetSitter implements UserDetails {
 
     public void addReview(Review review) {
         this.reviews.add(review);
+    }
+
+    public boolean isAccountEnabled() {
+        return accountEnabled;
+    }
+
+    public void setAccountEnabled(boolean accountEnabled) {
+        this.accountEnabled = accountEnabled;
     }
 }

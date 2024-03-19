@@ -17,7 +17,7 @@
                     <h5 class="card-title" th:text="${sitter.name + ' ' + sitter.lastName}"></h5>
                     <p class="card-text" th:text="${'Город: ' + sitter.city}"></p>
                     <p class="card-text" th:text="${'Опыт: ' + sitter.experience}"></p>
-                    <p class="card-text" th:text="${'Питомцы: ' + sitter.acceptedPets}"></p>
+                    <p class="card-text" th:text="${'Каких животных берет: ' + sitter.acceptedPets}"></p>
                     <p class="card-text" th:text="${'Свои питомцы: ' + (sitter.hasOwnPets ? 'Да' : 'Нет')}"></p>
                     <p class="card-text" th:text="${'О себе: ' + sitter.bio}"></p>
                     <p class="card-text" th:text="${'Часовая ставка: ' + sitter.hourlyRate}"></p>

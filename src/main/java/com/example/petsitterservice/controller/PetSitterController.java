@@ -34,25 +34,7 @@ public class PetSitterController {
     @GetMapping("/dashboard/{sitterId}")
     public ResponseEntity<PetSitterDashboard> getSitterDashboard(@PathVariable Long sitterId) {
         PetSitter sitter = petSitterService.findSitterById(sitterId);
-        PetSitterDashboard sitterDashboard = new PetSitterDashboard();
-        sitterDashboard.setId(sitter.getId());
-        sitterDashboard.setUsername(sitter.getUsername());
-        sitterDashboard.setName(sitter.getName());
-        sitterDashboard.setLastName(sitter.getLastName());
-        sitterDashboard.setCity(sitter.getCity());
-        sitterDashboard.setBio(sitter.getBio());
-        sitterDashboard.setHourlyRate(sitter.getHourlyRate());
-        sitterDashboard.setDailyRate(sitter.getDailyRate());
-        sitterDashboard.setTakingNewOrders(sitter.isTakingNewOrders());
-        sitterDashboard.setAvailabilityDates(sitter.getAvailabilityDates());
-
-        List<PetBoardingRequest> requests = sitter.getRequests();
-        List<SitterPageBoardingRequest> sitterPageRequests = new ArrayList<>();
-        for (PetBoardingRequest boardingRequest : requests) {
-            SitterPageBoardingRequest sitterPageRequest = SitterPageBoardingRequest.fromPetBoardingRequest(boardingRequest);
-            sitterPageRequests.add(sitterPageRequest);
-        }
-        sitterDashboard.setRequests(sitterPageRequests);
+        PetSitterDashboard sitterDashboard = petSitterService.createSitterDashboard(sitter);
         return new ResponseEntity<>(sitterDashboard, HttpStatus.OK);
     }
 

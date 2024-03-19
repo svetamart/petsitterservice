@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,14 @@ public class PetOwnerWebController {
             List<Pet> pets = user.getPets();
             List<OwnerPageBoardingRequest> requests = user.getRequests();
 
+            LocalDate currentDate = LocalDate.now();
+
+            for (OwnerPageBoardingRequest request : requests) {
+                LocalDate endDate = LocalDate.parse(request.getEndDate());
+                boolean isDatePastOrPresent = !endDate.isAfter(currentDate) || endDate.isEqual(currentDate);
+                request.setAvailableToReview(isDatePastOrPresent);
+                logger.info(request.toString());
+            }
 
             model.addAttribute("requests", requests != null ? requests : Collections.emptyList());
 
@@ -202,8 +211,43 @@ public class PetOwnerWebController {
                 model.addAttribute("errorMessage", "Failed to submit personal request");
                 return "error";
             }
-
     }
+
+    @GetMapping("/{userId}/addReviewForm/{requestId}")
+    public String showAddReviewForm(Model model, @PathVariable Long requestId, @PathVariable Long userId) {
+        model.addAttribute("userId", userId);
+        model.addAttribute("request", requestId);
+        model.addAttribute("review", new ReviewDto());
+        return "addReviewForm";
+    }
+
+    @PostMapping("/{userId}/{requestId}/addReview")
+    public String addReview(Model model, @ModelAttribute ReviewDto reviewDto, @PathVariable Long userId, @PathVariable Long requestId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String apiUrl = "http://localhost:8080/api/users/dashboard/addReview";
+
+        reviewDto.setRequestId(requestId);
+
+        HttpEntity<ReviewDto> requestEntity = new HttpEntity<>(reviewDto, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                model.addAttribute("successMessage", "Review successfully added");
+                return "redirect:/petOwner/dashboard/" + userId;
+            } else {
+                model.addAttribute("errorMessage", "Failed adding review");
+                return "error";
+            }
+    }
+
+
 
 
 }

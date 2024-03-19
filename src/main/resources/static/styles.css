@@ -64,3 +64,13 @@ ul li {
 .request-card p {
     margin: 0;
 }
+
+.question-mark {
+    cursor: help;
+    margin-left: 5px;
+}
+
+.star-icon {
+    width: 20px;
+    height: auto;
+}

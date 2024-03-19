@@ -1,5 +1,7 @@
 package com.example.petsitterservice.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,9 +57,14 @@ public class LoginController {
         return ResponseEntity.ok("Pet sitter registered successfully");
     }
 
-    @GetMapping("/logout/{userId}")
-    public ResponseEntity<String> logout(@PathVariable Long userId) {
-        authService.logout(userId);
-        return ResponseEntity.ok("User logged out");
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        if (request.getSession(false) != null) {
+            HttpSession session = request.getSession(false);
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logout successful");
     }
 }

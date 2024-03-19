@@ -39,6 +39,9 @@ public class PetBoardingRequest {
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
 
+    @Column(nullable = true)
+    private boolean reviewed;
+
 
     public PetBoardingRequest() {}
 
@@ -118,5 +121,13 @@ public class PetBoardingRequest {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public boolean isReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 }

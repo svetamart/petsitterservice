@@ -1,5 +1,6 @@
 package com.example.petsitterservice.controller.web;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,19 +136,15 @@ public class LoginWebController {
     }
 
 
-//    @GetMapping("/logout")
-//    public String logout(HttpServletRequest request) {
-//        Long userId = (Long) request.getSession().getAttribute("userId");
-//
-//        if (userId != null) {
-//            String logoutApiUrl = "http://localhost:8080/api/auth/logout?userId=" + userId;
-//            restTemplate.getForEntity(logoutApiUrl, String.class);
-//
-//            request.getSession().removeAttribute("Authorization");
-//            request.getSession().removeAttribute("userId");
-//            request.getSession().invalidate();
-//        }
-//
-//        return "redirect:/login";
-//    }
+    @GetMapping ("/logout")
+    public String logout() {
+        logger.info("logout web controller");
+        String logoutUrl = "http://localhost:8080/api/logout";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.postForEntity(logoutUrl, requestEntity, String.class);
+        return "redirect:/login";
+    }
 }

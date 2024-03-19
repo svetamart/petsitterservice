@@ -12,7 +12,11 @@ public class Review {
     @Column(nullable = false)
     private String message;
     @Column(nullable = false)
-    private int rating;
+    private String rating;
+
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    private PetBoardingRequest request;
 
     public Review() {
     }
@@ -25,11 +29,11 @@ public class Review {
         this.message = message;
     }
 
-    public int getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 
@@ -39,5 +43,13 @@ public class Review {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public PetBoardingRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(PetBoardingRequest request) {
+        this.request = request;
     }
 }

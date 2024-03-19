@@ -21,6 +21,9 @@
                 <p class="mb-0" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></p>
                 <p class="mb-0" th:text="${user.getCity()}"></p>
             </div>
+            <div class="col-md-9 text-right">
+                <a href="/logout" class="btn btn-outline-light">Выйти</a>
+            </div>
         </div>
     </div>
 </nav>
@@ -66,7 +69,16 @@
                         <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
                         <span th:if="${request.getStatus().toString() == 'DECLINED'}">отклонена</span>
                         <span th:if="${request.getStatus().toString() == 'PERSONAL'}">создан персональный запрос</span>
+                        <span th:if="${request.getStatus().toString() == 'UNPROCESSED'}">не обработана
+                            <span class="question-mark" title="Эта заявка не была обработана.
+                            Скорее всего, нашему алгоритму не удалось найти для вас подходящего пет-ситтера и вы не заполнили форму для создания персональной заявки.
+                            Ничего страшного! Просто свяжитесь с нами по телефону или электронной почте, которые указаны в разделе 'Контакты'.
+                            Мы поможем создать персональную заявку для вас и ответим на все ваши вопросы.">?</span>
+                        </span>
                     </p>
+                    <div th:if="${request.isAvailableToReview() && request.getStatus().toString() == 'ACCEPTED' && !request.getHasReview()}">
+                        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addReviewForm/{requestId}(userId=${userId}, requestId=${request.requestId})}">Оставить отзыв</a>
+                    </div>
                 </div>
             </div>
         </div>

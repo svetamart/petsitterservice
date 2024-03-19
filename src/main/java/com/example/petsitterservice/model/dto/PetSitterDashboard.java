@@ -27,7 +27,7 @@ public class PetSitterDashboard {
 
     private boolean takingNewOrders;
 
-    private List<Review> reviews;
+    private List<SitterPageReview> reviews;
 
     private List<String> availabilityDates;
 
@@ -109,11 +109,11 @@ public class PetSitterDashboard {
         this.takingNewOrders = takingNewOrders;
     }
 
-    public List<Review> getReviews() {
+    public List<SitterPageReview> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(List<SitterPageReview> reviews) {
         this.reviews = reviews;
     }
 

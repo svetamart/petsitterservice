@@ -2,13 +2,11 @@ package com.example.petsitterservice.config;
 
 
 import com.example.petsitterservice.service.CustomUserDetailsService;
+import com.example.petsitterservice.utility.CustomAuthenticationManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -49,8 +47,6 @@ public class SecurityConfig {
                                 .requestMatchers("/petOwner/dashboard/**").hasRole("OWNER")
                                 .requestMatchers("/api/users/dashboard/**").permitAll()
                                 .requestMatchers("/petSitter/dashboard/**").hasRole("SITTER")
-                                //.requestMatchers("/petSitter/dashboard/**").permitAll()
-                                //.requestMatchers("/petOwner/dashboard/**").permitAll()
                                 .requestMatchers("/api/petSitters/dashboard/**").permitAll()
                                 .requestMatchers("/main/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
@@ -62,6 +58,13 @@ public class SecurityConfig {
                                 .requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers("/api/petSitters/**").permitAll()
                                 .anyRequest().authenticated())
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login")
+//                        .invalidateHttpSession(true)
+//                        .deleteCookies("JSESSIONID")
+//                        .permitAll()
+//                )
                 .httpBasic(withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer

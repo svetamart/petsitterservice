@@ -3,6 +3,7 @@ package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.Pet;
 import com.example.petsitterservice.model.PetOwner;
+import com.example.petsitterservice.model.dto.PetDto;
 import com.example.petsitterservice.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,21 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public void addPet(Pet pet, PetOwner owner) {
-        pet.setOwner(owner);
-        owner.addPet(pet);
-        petRepository.save(pet);
+    public void addPet(PetDto pet, PetOwner owner) {
+        Pet newPet = new Pet();
+        newPet.setName(pet.getName());
+
+        String ageString = PetServiceMainFacadeImpl.formatAge(pet.getAge(), pet.getAgeUnit());
+        newPet.setAge(ageString);
+
+        newPet.setSize(pet.getSize());
+        newPet.setSpecies(pet.getSpecies());
+        newPet.setBreed(pet.getBreed());
+        newPet.setGender(pet.getGender());
+        newPet.setSterilized(pet.isSterilized());
+        newPet.setOwner(owner);
+        owner.addPet(newPet);
+        petRepository.save(newPet);
     }
 
     public Pet getPetById(Long petId) {

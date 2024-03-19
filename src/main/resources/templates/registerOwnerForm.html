@@ -34,7 +34,13 @@
 
     <div class="mb-3">
       <label for="city" class="form-label">Город:</label>
-      <input type="text" class="form-control" id="city" th:field="*{city}" required/>
+      <select class="form-select" id="city" th:field="*{city}" required>
+        <option value="Санкт-Петербург">Санкт-Петербург</option>
+        <option value="Москва">Москва</option>
+        <option value="Самара">Самара</option>
+        <option value="Тюмень">Тюмень</option>
+        <option value="Сочи">Сочи</option>
+      </select>
     </div>
 
     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>

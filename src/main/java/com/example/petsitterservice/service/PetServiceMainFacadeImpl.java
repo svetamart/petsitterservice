@@ -1,17 +1,21 @@
 package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.*;
-import com.example.petsitterservice.model.dto.PersonalRequestDto;
-import com.example.petsitterservice.model.dto.PetBoardingRequestDto;
+import com.example.petsitterservice.model.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
 public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
+
+    private static final Logger logger = LoggerFactory.getLogger(PetServiceMainFacadeImpl.class);
 
     private final PetService petService;
     private final PetOwnerService userService;
@@ -22,17 +26,21 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
     private final PersonalRequestService personalRequestService;
 
+    private final ReviewService reviewService;
+
     @Autowired
     public PetServiceMainFacadeImpl(PetService petService, PetOwnerService userService,
                                     PetBoardingRequestService boardingRequestService, PetSitterService petSitterService,
                                     BCryptPasswordEncoder passwordEncoder,
-                                    PersonalRequestService personalRequestService) {
+                                    PersonalRequestService personalRequestService,
+                                    ReviewService reviewService) {
         this.petService = petService;
         this.userService = userService;
         this.boardingRequestService = boardingRequestService;
         this.petSitterService = petSitterService;
         this.passwordEncoder = passwordEncoder;
         this.personalRequestService = personalRequestService;
+        this.reviewService = reviewService;
     }
     @Override
     public Pet getPetById(Long petId) {
@@ -86,7 +94,7 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
     @Override
     public void addPetSitter(PetSitter sitter) {
-        petSitterService.addSitter(sitter);
+        petSitterService.saveSitter(sitter);
     }
 
     @Override
@@ -157,7 +165,7 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
     }
 
     @Override
-    public void addPet(Pet pet, PetOwner owner) {
+    public void addPet(PetDto pet, PetOwner owner) {
         petService.addPet(pet, owner);
     }
 
@@ -221,6 +229,137 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         request.setPhone(requestDto.getPhone());
         personalRequestService.addRequest(request);
         boardingRequestService.updateRequestStatus(boardingRequest.getId(), RequestStatus.PERSONAL);
+        userService.addPersonalRequest(owner, request);
+    }
+
+    @Override
+    public void deleteUserByRole(String userRole, Long userId) {
+        switch (userRole) {
+            case "ROLE_OWNER":
+                userService.deleteById(userId);
+                break;
+            case "ROLE_SITTER":
+                petSitterService.deleteById(userId);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid user role: " + userRole);
+        }
+    }
+
+    @Override
+    public void activateAccountByRole(String userRole, Long userId) {
+        switch (userRole) {
+            case "ROLE_OWNER":
+                userService.activateAccount(userId);
+                break;
+            case "ROLE_SITTER":
+                petSitterService.activateAccount(userId);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid user role: " + userRole);
+        }
+    }
+
+    @Override
+    public void deactivateAccountByRole(String userRole, Long userId) {
+        switch (userRole) {
+            case "ROLE_OWNER":
+                userService.deactivateAccount(userId);
+                break;
+            case "ROLE_SITTER":
+                petSitterService.deactivateAccount(userId);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid user role: " + userRole);
+        }
+
+
+    }
+
+    @Override
+    public PetOwnerDashboard createOwnerDashboard(PetOwner user) {
+        PetOwnerDashboard ownerDashboard = new PetOwnerDashboard();
+
+        ownerDashboard.setId(user.getId());
+        ownerDashboard.setUsername(user.getUsername());
+        ownerDashboard.setName(user.getName());
+        ownerDashboard.setLastName(user.getLastName());
+        ownerDashboard.setCity(user.getCity());
+        ownerDashboard.setPets(user.getPets());
+
+        List<PetBoardingRequest> requests = user.getRequests();
+        List<OwnerPageBoardingRequest> sitterPageRequests = new ArrayList<>();
+        for (PetBoardingRequest boardingRequest : requests) {
+            logger.info(String.valueOf(boardingRequest.getId()));
+            logger.info(String.valueOf(boardingRequest.isReviewed()));
+            OwnerPageBoardingRequest ownerPageRequest = OwnerPageBoardingRequest.fromPetBoardingRequest(boardingRequest);
+
+            sitterPageRequests.add(ownerPageRequest);
+        }
+        ownerDashboard.setRequests(sitterPageRequests);
+
+        return ownerDashboard;
+    }
+
+    @Override
+    public PetSitterDashboard createSitterDashboard(PetSitter sitter) {
+        PetSitterDashboard sitterDashboard = new PetSitterDashboard();
+
+        sitterDashboard.setId(sitter.getId());
+        sitterDashboard.setUsername(sitter.getUsername());
+        sitterDashboard.setName(sitter.getName());
+        sitterDashboard.setLastName(sitter.getLastName());
+        sitterDashboard.setCity(sitter.getCity());
+        sitterDashboard.setBio(sitter.getBio());
+        sitterDashboard.setHourlyRate(sitter.getHourlyRate());
+        sitterDashboard.setDailyRate(sitter.getDailyRate());
+        sitterDashboard.setTakingNewOrders(sitter.isTakingNewOrders());
+        sitterDashboard.setAvailabilityDates(sitter.getAvailabilityDates());
+
+        List<Review> reviews = sitter.getReviews();
+        List<SitterPageReview> sitterPageReviews = new ArrayList<>();
+        for (Review review : reviews) {
+            SitterPageReview sitterPageReview = SitterPageReview.fromReview(review);
+            sitterPageReviews.add(sitterPageReview);
+
+        }
+        sitterDashboard.setReviews(sitterPageReviews);
+
+        List<PetBoardingRequest> requests = sitter.getRequests();
+        List<SitterPageBoardingRequest> sitterPageRequests = new ArrayList<>();
+        for (PetBoardingRequest boardingRequest : requests) {
+            SitterPageBoardingRequest sitterPageRequest = SitterPageBoardingRequest.fromPetBoardingRequest(boardingRequest);
+            sitterPageRequests.add(sitterPageRequest);
+        }
+        sitterDashboard.setRequests(sitterPageRequests);
+        return sitterDashboard;
+    }
+
+    @Override
+    public void createReview(ReviewDto review) {
+        PetBoardingRequest request = boardingRequestService.getRequestById(review.getRequestId());
+        PetSitter sitter = petSitterService.getById(request.getSitter().getId());
+
+        request.setReviewed(true);
+        boardingRequestService.saveRequest(request);
+
+        Review newReview = new Review();
+        newReview.setRequest(request);
+        newReview.setMessage(review.getMessage());
+
+        String rating = review.getRating();
+        newReview.setRating(parseRating(rating));
+        logger.info("REVIEW RATING");
+        logger.info(String.valueOf(newReview.getRating()));
+
+        reviewService.addReview(newReview);
+        sitter.addReview(newReview);
+        petSitterService.saveSitter(sitter);
+    }
+
+    @Override
+    public void deleteReview(Long id) {
+        reviewService.deleteReview(id);
     }
 
     public boolean isPasswordCorrect(String enteredPassword, String actualPassword) {
@@ -233,5 +372,9 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
     public void registerPetSitter(PetSitter user) {
         petSitterService.register(user);
+    }
+
+    private String parseRating(String ratingString) {
+        return ratingString.replaceAll("[^0-9]", "");
     }
 }

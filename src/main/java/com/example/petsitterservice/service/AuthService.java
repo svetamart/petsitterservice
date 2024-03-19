@@ -1,6 +1,6 @@
 package com.example.petsitterservice.service;
 
-import com.example.petsitterservice.config.CustomAuthenticationManager;
+import com.example.petsitterservice.utility.CustomAuthenticationManager;
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.AuthResponse;
 import com.example.petsitterservice.model.dto.OwnerRequest;
@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,13 +44,20 @@ public class AuthService {
                 }
 
                 if (petOwner != null || petSitter != null) {
-                    Long userId = (petOwner != null) ? petOwner.getId() : petSitter.getId();
-                    String userRole = authentication.getAuthorities().stream()
-                            .findFirst()
-                            .map(GrantedAuthority::getAuthority)
-                            .orElse("");
+                    boolean accountEnabled = (petOwner != null) ? petOwner.isEnabled() : petSitter.isEnabled();
 
-                    return new AuthResponse("Authentication successful", userRole, userId);
+                    if (accountEnabled) {
+                        Long userId = (petOwner != null) ? petOwner.getId() : petSitter.getId();
+                        String userRole = authentication.getAuthorities().stream()
+                                .findFirst()
+                                .map(GrantedAuthority::getAuthority)
+                                .orElse("");
+
+                        return new AuthResponse("Authentication successful", userRole, userId);
+                    } else {
+                        logger.error("Authentication failed: User account is not enabled");
+                        return new AuthResponse("Authentication failed: User account is not enabled", null, null);
+                    }
                 } else {
                     logger.error("Authentication failed: User not found");
                     return new AuthResponse("Authentication failed: User not authenticated", null, null);
@@ -61,6 +69,12 @@ public class AuthService {
         return new AuthResponse("Authentication failed: Unexpected error", null, null);
     }
 
+    public boolean isAuthorizedToAccessDashboard(Long userId) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long loggedInUserId = userService.getUserByUsername(userDetails.getUsername()).getId();
+        return userId.equals(loggedInUserId);
+    }
+
     public void registerPetOwner(OwnerRequest user) {
         PetOwner newUser = new PetOwner();
         newUser.setName(user.getName());
@@ -69,6 +83,7 @@ public class AuthService {
         newUser.setPassword(user.getPassword());
         newUser.setCity(user.getCity());
         newUser.setRole(user.getRole());
+        newUser.setAccountEnabled(true);
 
         userService.registerPetOwner(newUser);
     }
@@ -89,11 +104,8 @@ public class AuthService {
         newUser.setPhone(user.getPhone());
         newUser.setHourlyRate(user.getHourlyRate());
         newUser.setDailyRate(user.getDailyRate());
+        newUser.setAccountEnabled(true);
 
         userService.registerPetSitter(newUser);
-    }
-
-    public void logout(Long userId) {
-        SecurityContextHolder.clearContext();
     }
 }
