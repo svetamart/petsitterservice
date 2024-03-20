@@ -4,89 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет</title>
-    <link rel="stylesheet" th:href="@{/styles.css}" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .bg-cover {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+         .container-main {
+             padding-left: 10rem;
+             padding-right: 10rem;
+         }
+         .custom-btn {
+          background-color: #8B6446;
+          color: #fff;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+             margin-top: 30px;
+        }
+
+        .custom-btn:hover {
+          background-color: #8B6446;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+         .text-brown {
+             color: #584136;
+         }.text-brown2 {
+             color: #8B6446;
+         }
+         .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+         .card-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+        .card-divider {
+          border-top: 1px solid #ccc;
+          margin-top: 10px;
+          margin-bottom: 15px;
+        }
+         .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip::before {
+            content: "?";
+            position: absolute;
+            top: -3px;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background-color: #8B6446;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        .tooltip:hover::after {
+            content: attr(title);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            background-color: #8B6446;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            z-index: 1;
+            text-align: left;
+        }
+
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <!-- Изображение пользователя и никнейм -->
-                <img src="/images/user-icon-1024x1024.png" class="rounded-circle" alt="User Icon" style="max-width: 50px;">
-                <span class="navbar-brand mb-0 h1 ml-2" th:text="${user.getUsername()}"></span>
-            </div>
-            <div class="col-md-9">
-                <!-- Имя, фамилия и город пользователя -->
-                <p class="mb-0" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></p>
-                <p class="mb-0" th:text="${user.getCity()}"></p>
-            </div>
-            <div class="col-md-9 text-right">
-                <a href="/logout" class="btn btn-outline-light">Выйти</a>
-            </div>
-        </div>
+<header class="bg-light text-dark py-2">
+    <div class="container d-flex justify-content-between align-items-center px-4">
+        <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
+        <nav>
+            <ul class="nav" style="font-size: larger">
+                <li class="nav-item"><a th:href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
+                <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
+                <li class="nav-item"><a th:href="/logout" class="nav-link text-dark">Выйти</a></li>
+            </ul>
+        </nav>
     </div>
-</nav>
+</header>
 
-<div class="container mt-4">
-    <!-- Блок с питомцами -->
-    <h3 class="mt-4">Мои питомцы</h3>
-    <div class="row">
-        <div th:if="${pets}" th:each="pet, iterStat : ${pets}" class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${pet.getName() + ' (' + pet.getSpecies().toLowerCase() + ')'}"></h5>
-                    <p class="card-text"><strong>Порода:</strong> <span th:text="${pet.getBreed().toLowerCase()}"></span></p>
-                    <p class="card-text"><strong>Возраст:</strong> <span th:text="${pet.getAge().toLowerCase()}"></span></p>
-                    <p class="card-text"><strong>Пол:</strong> <span th:text="${pet.getGender()}"></span></p>
-                    <p class="card-text"><strong>Кастрация/стерилизация:</strong> <span th:text="${pet.isSterilized() ? 'да' : 'нет'}"></span></p>
-                </div>
-            </div>
-        </div>
-        <div th:if="${pets == null || pets.isEmpty()}">
-            <p>Вы еще не добавили питомцев в свой список.</p>
-        </div>
-        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addPetForm(userId=${userId})}">Добавить питомца</a>
+<section class="bg-cover bg-center py-10" style="background-image: url('/images/Profile_Header.png')">
+    <div class="container mx-auto px-4 text-center" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3)">
+        <h1 class="text-7xl font-bold text-brown my-5" th:text="${user.getUsername()}"></h1>
+        <h2 class="text-4xl font-bold text-brown2 my-3" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></h2>
+        <p class="text-2xl text-brown2 flex items-center justify-center my-1">
+            <i class="fas fa-map-marker-alt mr-2" th:text="${user.getCity()}"></i>
+        </p>
     </div>
+</section>
+<div class="container container-main mt-10 text-xl">
 
-    <!-- Блок с запросами на передержку -->
-    <h3 class="mt-4">Запросы на передержку</h3>
-    <div class="row">
-        <div th:if="${requests}" th:each="request : ${requests}" class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${request.getPetName()}"></h5>
-                    <p class="card-text"><strong>с:</strong> <span th:text="${request.getStartDate()}"></span></p>
-                    <p class="card-text"><strong>по:</strong> <span th:text="${request.getEndDate()}"></span></p>
-                    <p class="card-text"><strong>Можно с другими животными?</strong>
-                        <span th:text="${request.isOtherPetsAccepted() ? 'да' : 'нет'}"></span>
-                    </p>
-                    <p class="card-text"><strong>Желаемый опыт пет-ситтера:</strong> <span th:text="${request.getSitterExperience()}"></span></p>
-                    <p class="card-text"><strong>Пет-ситтер:</strong> <span th:text="${request.getSitterName()}"></span></p>
-                    <p class="card-text"><strong>Телефон пет-ситтера:</strong> <span th:text="${request.getSitterPhone()}"></span></p>
-                    <p class="card-text"><strong>Статус заявки:</strong>
-                        <span th:if="${request.getStatus().toString() == 'PENDING'}">ожидает рассмотрения</span>
-                        <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
-                        <span th:if="${request.getStatus().toString() == 'DECLINED'}">отклонена</span>
-                        <span th:if="${request.getStatus().toString() == 'PERSONAL'}">создан персональный запрос</span>
-                        <span th:if="${request.getStatus().toString() == 'UNPROCESSED'}">не обработана
-                            <span class="question-mark" title="Эта заявка не была обработана.
-                            Скорее всего, нашему алгоритму не удалось найти для вас подходящего пет-ситтера и вы не заполнили форму для создания персональной заявки.
-                            Ничего страшного! Просто свяжитесь с нами по телефону или электронной почте, которые указаны в разделе 'Контакты'.
-                            Мы поможем создать персональную заявку для вас и ответим на все ваши вопросы.">?</span>
-                        </span>
-                    </p>
-                    <div th:if="${request.isAvailableToReview() && request.getStatus().toString() == 'ACCEPTED' && !request.getHasReview()}">
-                        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addReviewForm/{requestId}(userId=${userId}, requestId=${request.requestId})}">Оставить отзыв</a>
+
+
+    <div class="form-group" style="margin-top: 40px">
+        <h3 class="mt-8 text-4xl font-bold text-center my-4">Мои питомцы</h3>
+
+        <div class="row text-lg">
+            <div th:if="${pets}" th:each="pet, iterStat : ${pets}" class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body m-2">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title mb-2" th:text="${pet.getName()}" style="font-size: 1.25rem;"></h5>
+                                <div class="card-divider"></div>
+                                <div class="pet-info">
+                                    <p class="card-text mb-0"><strong>Порода:</strong> <span th:text="${pet.getBreed().toLowerCase()}"></span></p>
+                                    <p class="card-text mb-0"><strong>Возраст:</strong> <span th:text="${pet.getAge().toLowerCase()}"></span></p>
+                                    <p class="card-text mb-0"><strong>Пол:</strong> <span th:text="${pet.getGender()}"></span></p>
+                                    <p class="card-text mb-0"><strong>Кастрация/стерилизация:</strong> <span th:text="${pet.isSterilized() ? 'да' : 'нет'}"></span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <i th:class="${pet.getSpecies() == 'Собака' ? 'fas fa-dog' : 'fas fa-cat'}" style="font-size: 2rem;"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div th:if="${user.getRequests() == null || user.getRequests().isEmpty()}">
-            <p>У вас нет активных запросов на передержку.</p>
+        <div th:if="${pets == null || pets.isEmpty()}">
+            <p class="text-lg">Вы еще не добавили питомцев в свой список.</p>
         </div>
-        <a class="add-button" th:href="@{/petOwner/dashboard/{userId}/addRequestForm(userId=${userId})}">Создать запрос</a>
+        <a class="custom-btn btn-sm" th:href="@{/petOwner/dashboard/{userId}/addPetForm(userId=${userId})}">Добавить питомца</a>
+
+        <!-- Блок с запросами на передержку -->
+        <h3 class="mt-8 text-4xl font-bold text-center my-10">Запросы на передержку</h3>
+        <div class="row text-lg">
+            <div th:if="${sitterPageRequests}" th:each="request : ${sitterPageRequests}" class="col-md-5 mb-5">
+                <div class="card">
+                    <div class="card-body m-2">
+                        <h5 class="card-title" th:text="${request.getPetName()}"></h5>
+                        <div class="card-divider"></div>
+                        <p class="card-text"><strong>с:</strong> <span th:text="${request.getStartDate()}"></span></p>
+                        <p class="card-text"><strong>по:</strong> <span th:text="${request.getEndDate()}"></span></p>
+                        <p class="card-text"><strong>Можно с другими животными?</strong>
+                            <span th:text="${request.isOtherPetsAccepted() ? 'да' : 'нет'}"></span>
+                        </p>
+                        <p class="card-text"><strong>Желаемый опыт пет-ситтера:</strong> <span th:text="${request.getSitterExperience()}"></span></p>
+                        <p class="card-text"><strong>Пет-ситтер:</strong> <span th:text="${request.getSitterName()}"></span></p>
+                        <p class="card-text"><strong>Телефон пет-ситтера:</strong> <span th:text="${request.getSitterPhone()}"></span></p>
+                        <p class="card-text"><strong>Статус заявки:</strong>
+                            <span th:if="${request.getStatus().toString() == 'PENDING'}">ожидает рассмотрения</span>
+                            <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
+                            <span th:if="${request.getStatus().toString() == 'DECLINED'}">отклонена</span>
+                            <span th:if="${request.getStatus().toString() == 'PERSONAL'}">создан персональный запрос</span>
+                            <span th:if="${request.getStatus().toString() == 'UNPROCESSED'}">не обработана
+                            <span class="tooltip" title="Эта заявка не была обработана. Скорее всего, нашему алгоритму не удалось найти для вас подходящего пет-ситтера и вы не заполнили форму для создания персональной заявки. Ничего страшного! Просто свяжитесь с нами по телефону или электронной почте, которые указаны в разделе 'Контакты'. Мы поможем создать персональную заявку для вас и ответим на все ваши вопросы.">?</span>
+                        </span>
+                        </p>
+                        <div th:if="${request.isAvailableToReview() && request.getStatus().toString() == 'ACCEPTED' && !request.getHasReview()}">
+                            <a class="custom-btn btn-sm" th:href="@{/petOwner/dashboard/{userId}/addReviewForm/{requestId}(userId=${userId}, requestId=${request.requestId})}">Оставить отзыв</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${user.getRequests() == null || user.getRequests().isEmpty()}">
+                <p class="text-lg">У вас нет активных запросов на передержку.</p>
+            </div>
+        </div>
+        <a class="custom-btn btn-sm" th:href="@{/petOwner/dashboard/{userId}/addRequestForm(userId=${userId})}">Создать запрос</a>
     </div>
 </div>
+
+
+
+<footer class="bg-gray-900 text-white py-8 mt-20">
+    <div class="container mx-auto px-4">
+        <p class="text-center mt-4">&copy; 2024 PetFriend. Все права защищены.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

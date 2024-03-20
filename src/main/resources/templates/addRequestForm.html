@@ -3,43 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Запрос на передержку</title>
-    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <title>Новый запрос</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .container-main {
+             padding-left: 10rem;
+             padding-right: 10rem;
+         }
+        .bg-cover {
+            background-position: center;
+            background-repeat: no-repeat;
+/*            background-size: cover;*/
+        }
+         .custom-btn {
+          background-color: #d37f37;
+          color: #fff;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+             margin-top: 30px;
+        }
+
+        .custom-btn:hover {
+          background-color: #FF8C00;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 0.25rem;
+          box-sizing: border-box;
+          margin-bottom: 1rem;
+        }
+
+    </style>
 </head>
 <body>
-<h1>Новый запрос на передержку</h1>
-<form th:action="@{/petOwner/dashboard/{userId}/createRequest(userId=${userId})}" method="post" th:object="${request}">
-    <label>Выберите питомца:
-        <select th:field="*{petId}" required>
+<header class="bg-light text-dark py-2">
+    <div class="container d-flex justify-content-between align-items-center px-4">
+        <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+        <nav>
+            <ul class="nav" style="font-size: larger">
+                <li class="nav-item"><a href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
+                <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="bg-cover bg-center py-40" style="background-image: url('/images/milada-vigerova-7E9qvMOsZEM-unsplash.jpg'); background-position: calc(100%) -370px">
+    <div class="container mx-auto px-4">
+    </div>
+</section>
+
+
+<div class="container container-main mt-5 mb-20 text-lg">
+    <h2 class="mb-10 text-4xl">Новый запрос на передержку</h2>
+
+    <form th:action="@{/petOwner/dashboard/{userId}/createRequest(userId=${userId})}" method="post" th:object="${request}">
+        <label for="petId">Выберите питомца:</label>
+        <select id="petId" th:field="*{petId}" required>
             <option th:each="pet : ${user.pets}" th:value="${pet.id}">
                 <span th:text="${pet.name}"></span>
             </option>
         </select>
-    </label><br/>
-    <label>Дата начала: <input type="date" th:field="*{startDate}" required /></label><br/>
-    <label>Дата окончания: <input type="date" th:field="*{endDate}" required /></label><br/>
-    <label>Как вы относитесь к тому, что у ситтера могут быть собственные животные?
-        <select th:field="*{otherPetsAccepted}" required>
+        <small id="petHelp" class="form-text text-muted">Если в выплывающем списке ничего нет, значит, вы еще не добавили ни одного питомца. Вернитесь в свой личный кабинет, добавьте питомца и возвращайтесь к своей заявке.</small>
+
+        <label for="startDate" style="margin-top: 7px">Дата начала:</label>
+        <input type="date" id="startDate" th:field="*{startDate}" required />
+
+        <label for="endDate">Дата окончания:</label>
+        <input type="date" id="endDate" th:field="*{endDate}" required />
+
+        <label for="otherPetsAccepted">Как вы относитесь к тому, что у ситтера могут быть собственные животные?</label>
+        <select id="otherPetsAccepted" th:field="*{otherPetsAccepted}" required>
             <option value="true">Не против</option>
             <option value="false">Против</option>
         </select>
-    </label><br/>
-    <label>Опыт ситтера:
-        <select th:field="*{sitterExperience}" required>
+
+        <label for="sitterExperience">Опыт ситтера:</label>
+        <select id="sitterExperience" th:field="*{sitterExperience}" required>
             <option value="Неважно">Неважно</option>
             <option value="Меньше года">Меньше года</option>
             <option value="Больше 1 года">Больше 1 года</option>
             <option value="Больше 3 лет">Больше 3 лет</option>
             <option value="Больше 6 лет">Больше 6 лет</option>
         </select>
-    </label><br/>
-    <label>Комментарии: <textarea th:field="*{comments}" rows="4" cols="50"></textarea></label><br/>
-    <input type="submit" value="Создать запрос" />
-</form>
 
-<!-- Если список питомцев пуст, показываем ссылку для добавления питомца -->
-<div th:if="${#lists.isEmpty(pets)}">
-    <a th:href="@{/petOwner/dashboard/{userId}/addPetForm(userId=${userId})}">Добавить питомца</a>
+        <label for="comments">Комментарии:</label>
+        <textarea id="comments" th:field="*{comments}" rows="4" cols="50"></textarea>
+        <small id="commentsHelp" class="form-text text-muted">Ваш питомец любит грызть тапки? Или не прочь почесать коготки о мебель? Напишите о его характере, особенностях и привычках - обо всем, что пет-ситтеру нужно знать, чтобы обеспечить персональный уход и избежать неприятных ситуаций.</small>
+        <div>
+            <input type="submit" class="custom-btn" value="Создать запрос" />
+        </div>
+    </form>
 </div>
+<footer class="bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4">
+        <p class="text-center mt-4">&copy; 2024 PetFriend. Все права защищены.</p>
+    </div>
+</footer>
 </body>
 </html>

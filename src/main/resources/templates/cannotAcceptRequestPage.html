@@ -2,11 +2,76 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Cannot Accept Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ошибка</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .container-main {
+             padding-left: 10rem;
+             padding-right: 10rem;
+         }
+        .login-container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .custom-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #d37f37;
+            color: #ffffff;
+            text-decoration: none;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+
+        .bg-cover {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+    </style>
 </head>
 <body>
-<h2>Не удалось принять заявку :(</h2>
-<p>Возможно, даты, указанные в заявке, уже заняты. Пожалуйста, проверьте ваш календарь.</p>
-<a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}">Вернуться в личный кабинет</a>
+<header class="bg-light text-dark py-2">
+  <div class="container d-flex justify-content-between align-items-center px-4">
+    <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+    <nav>
+      <ul class="nav" style="font-size: larger">
+        <li class="nav-item"><a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
+        <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="bg-cover bg-center py-40" style="background-image: url('/images/matthew-henry-2Ts5HnA67k8-unsplash.jpg'); background-position: calc(100%) -200px">
+  <div class="container mx-auto px-4">
+  </div>
+</section>
+
+<div class="container container-main text-center mt-5 mb-20 text-lg">
+  <h2 class="mb-10 text-center text-4xl">Не удалось принять заявку :(</h2>
+
+  <p class="mb-4 text-center text-xl">Возможно, указанные в заявке даты уже заняты. Пожалуйста, проверьте ваш календарь.</p>
+  <a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="custom-btn text-lg">Вернуться в личный кабинет</a>
+</div>
+<footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <p class="text-center mt-4">&copy; 2024 PetFriend. Все права защищены.</p>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

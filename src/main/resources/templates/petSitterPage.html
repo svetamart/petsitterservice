@@ -4,72 +4,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Личный кабинет</title>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-
-  <link rel="stylesheet" th:href="@{/styles.css}" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <style>
-  .fc-available {
-    background-color: lightgreen;
-  }
-  </style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .bg-cover {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+         .container-main {
+             padding-left: 10rem;
+             padding-right: 10rem;
+         }
+         .custom-btn {
+          background-color: #8B6446;
+          color: #fff;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+             margin-top: 30px;
+        }
 
+        .custom-btn:hover {
+          background-color: #8B6446;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 0.25rem;
+          box-sizing: border-box;
+          margin-bottom: 1rem;
+        }
+         .text-brown {
+             color: #584136;
+         }.text-brown2 {
+             color: #8B6446;
+         }
+
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-primary">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-3">
-        <!-- Изображение пользователя и никнейм -->
-        <img src="/images/user-icon-1024x1024.png" class="rounded-circle" alt="User Icon" style="max-width: 50px;">
-        <span class="navbar-brand mb-0 h1 ml-2" th:text="${user.getUsername()}"></span>
-      </div>
-      <div class="col-md-9">
-        <!-- Имя, фамилия и город пользователя -->
-        <p class="mb-0" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></p>
-        <p class="mb-0" th:text="${user.getCity()}"></p>
-      </div>
-    </div>
+<header class="bg-light text-dark py-2">
+  <div class="container d-flex justify-content-between align-items-center px-4">
+    <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
+    <nav>
+      <ul class="nav" style="font-size: larger">
+        <li class="nav-item"><a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
+        <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
+        <li class="nav-item"><a th:href="/logout" class="nav-link text-dark">Выйти</a></li>
+      </ul>
+    </nav>
   </div>
-    <div class="col-md-9 text-right">
-      <a href="/logout" class="btn btn-outline-light">Выйти</a>
-  </div>
-</nav>
+</header>
 
-<div class="container mt-4">
+<section class="bg-cover bg-center py-10" style="background-image: url('/images/Profile_Header.png')">
+  <div class="container mx-auto px-4 text-center" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3)">
+    <h1 class="text-7xl font-bold text-brown my-5" th:text="${user.getUsername()}"></h1>
+    <h2 class="text-4xl font-bold text-brown2 my-3" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></h2>
+    <p class="text-2xl text-brown2 flex items-center justify-center my-1">
+      <i class="fas fa-map-marker-alt mr-2" th:text="${user.getCity()}"></i>
+    </p>
+  </div>
+</section>
+<div class="container container-main mt-10 text-xl">
   <div>
     <p th:text="${user.getBio()}"></p>
-    <p>Беру от <span th:text="${user.getHourlyRate()}"></span> за час и <span th:text="${user.getDailyRate()}"></span> в сутки.</p>
+    <p>Ставка от <span th:text="${user.getHourlyRate()}"></span> за час и <span th:text="${user.getDailyRate()}"></span> в сутки.</p>
   </div>
   <div class="form-group">
     <!-- Статус принятия новых питомцев и кнопка для изменения -->
     <p>Принимаю новых питомцев: <span th:text="${user.takingNewOrders ? 'Да' : 'Нет'}"></span></p>
-    <a class="add-button" th:href="@{/petSitter/dashboard/{userId}/changeNewOrders(userId=${userId})}">Изменить</a>
+    <div>
+      <a class="custom-btn btn-sm" th:href="@{/petSitter/dashboard/{userId}/changeNewOrders(userId=${userId})}">Изменить</a>
+    </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" style="margin-top: 40px">
     <!-- Календарь доступности ситтера и кнопка для изменения -->
-    <p>Доступность ситтера:</p>
-<!--    <div id="calendar"></div>-->
-    <ul>
-      <li th:each="date : ${user.getAvailabilityDates()}" th:text="${date}"></li>
-    </ul>
-    <a class="add-button" th:href="@{/petSitter/dashboard/{userId}/changeAvailability(userId=${userId})}">Изменить</a>
+    <h3 class="mt-8 text-4xl font-bold text-center my-4">Мой календарь</h3>
+    <select class="custom-select" disabled >
+      <option th:each="date : ${user.getAvailabilityDates()}" th:value="${date}" th:text="${date}"></option>
+    </select>
+    <a class="custom-btn btn-sm" th:href="@{/petSitter/dashboard/{userId}/changeAvailability(userId=${userId})}">Изменить</a>
   </div>
-
 
   <!-- Блок с запросами на передержку -->
-  <h3 class="mt-4">Запросы на передержку</h3>
-  <div class="row">
+  <h3 class="mt-8 text-4xl font-bold text-center my-10">Запросы на передержку</h3>
+  <div class="row text-lg">
     <div th:if="${sitterPageRequests}" th:each="request : ${sitterPageRequests}" class="col-md-4 mb-4">
       <div class="card">
         <div class="card-body">
@@ -93,70 +134,55 @@
             <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
             <span th:if="${request.getStatus().toString() == 'DECLINED'}">отклонена</span>
           </p>
-          <div th:if="${request.getStatus().toString() == 'PENDING'}">
-            <form th:action="@{/petSitter/dashboard/{userId}/acceptRequest/{requestId}(userId=${userId}, requestId=${request.id})}" method="post">
-              <button type="submit" class="btn btn-success">Принять</button>
-            </form>
-            <form th:action="@{/petSitter/dashboard/{userId}/declineRequest/{requestId}(userId=${userId}, requestId=${request.id})}" method="post">
-              <button type="submit" class="btn btn-danger">Отклонить</button>
-            </form>
+          <div class="d-flex justify-content-between">
+            <div th:if="${request.getStatus().toString() == 'PENDING'}">
+              <form th:action="@{/petSitter/dashboard/{userId}/acceptRequest/{requestId}(userId=${userId}, requestId=${request.id})}" method="post">
+                <button type="submit" class="btn btn-success btn-sm">Принять</button>
+              </form>
+            </div>
+            <div th:if="${request.getStatus().toString() == 'PENDING'}">
+              <form th:action="@{/petSitter/dashboard/{userId}/declineRequest/{requestId}(userId=${userId}, requestId=${request.id})}" method="post">
+                <button type="submit" class="btn btn-danger btn-sm">Отклонить</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div th:if="${user.getRequests() == null || user.getRequests().isEmpty()}">
-      <p>Вам еще не поступило запросов на передержку.</p>
+      <p class="text-lg">Вам еще не поступило запросов на передержку.</p>
     </div>
-  </div>
-
-  <!-- Блок с отзывами -->
-  <h3 class="mt-4">Отзывы</h3>
-  <div class="row">
-    <div th:if="${sitterPageReviews}" th:each="review : ${sitterPageReviews}" class="col-md-4 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${review.getUserName()}"></h5>
-          <p class="card-text">
+    <h3 class="mt-8 text-4xl font-bold text-center my-10">Отзывы</h3>
+    <div class="row">
+      <div th:if="${sitterPageReviews}" th:each="review : ${sitterPageReviews}" class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${review.getUserName()}"></h5>
+            <p class="card-text">
               <span th:each="i : ${#numbers.sequence(1, review.rating)}">
               <img src="/images/star.png" alt="Star Icon" class="star-icon" style="display: inline-block;">
               </span>
-          </p>
-          <p class="card-text">Питомец <span th:text="${review.getPetName()}"></span>, был в гостях с <span th:text="${review.getStartDate()}"></span> по <span th:text="${review.getEndDate()}"></span></p>
-          <p class="card-text" th:text="${review.getMessage()}"></p>
+            </p>
+            <p class="card-text">Питомец <span th:text="${review.getPetName()}"></span>, был в гостях с <span th:text="${review.getStartDate()}"></span> по <span th:text="${review.getEndDate()}"></span></p>
+            <p class="card-text" th:text="${review.getMessage()}"></p>
+          </div>
         </div>
       </div>
-    </div>
-    <div th:if="${sitterPageReviews == null || sitterPageReviews.isEmpty()}">
-      <p>У вас пока нет отзывов. Берите новые заказы, чтобы получать отзывы от владельцев питомцев.</p>
+      <div th:if="${sitterPageReviews == null || sitterPageReviews.isEmpty()}">
+        <p class="text-lg">У вас пока нет отзывов. Берите новые заказы, чтобы получать отзывы от владельцев питомцев.</p>
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
 
-    var availableDates = [
-      { title: 'Available', start: '2024-03-05' },
-      { title: 'Available', start: '2024-03-10' },
-      { title: 'Available', start: '2024-03-15' },
-      { title: 'Available', start: '2024-03-20' },
-    ];
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      events: availableDates,
-      eventContent: function(arg) {
-        arg.el.classList.add('fc-available');
-      }
-    });
+<footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4">
+    <p class="text-center mt-4">&copy; 2024 PetFriend. Все права защищены.</p>
+  </div>
+</footer>
 
-    calendar.render();
-  });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

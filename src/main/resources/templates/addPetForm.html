@@ -4,48 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить питомца</title>
-    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .bg-cover {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .container-main {
+             padding-left: 10rem;
+             padding-right: 10rem;
+         }
+         .custom-btn {
+          background-color: #d37f37;
+          color: #fff;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+             margin-top: 10px;
+        }
+
+        .custom-btn:hover {
+          background-color: #FF8C00;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        input[type="text"],
+        select {
+          width: 100%;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 0.25rem;
+          box-sizing: border-box;
+          margin-bottom: 1rem;
+        }
+
+    </style>
 </head>
 <body>
-<h1>Добавить питомца</h1>
-<form th:action="@{/petOwner/dashboard/{userId}/addPet(userId=${userId})}" method="post" th:object="${pet}">
-    <label>Имя питомца: <input type="text" th:field="*{name}" required /></label><br/>
-    <label>Вид:
-        <select th:field="*{species}" required>
+<header class="bg-light text-dark py-2">
+    <div class="container d-flex justify-content-between align-items-center px-4">
+        <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+        <nav>
+            <ul class="nav" style="font-size: larger">
+                <li class="nav-item"><a href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
+                <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="bg-cover bg-center py-40" style="background-image: url('/images/jamie-street-VETPuVqsqnQ-unsplash.jpg'); background-position: calc(100%) -370px">
+    <div class="container mx-auto px-4">
+    </div>
+</section>
+
+<div class="container container-main mx-auto mt-5 mb-20 text-lg">
+    <h2 class="mb-10 text-4xl">Добавить питомца</h2>
+
+    <form th:action="@{/petOwner/dashboard/{userId}/addPet(userId=${userId})}" method="post" th:object="${pet}">
+        <label for="name">Имя питомца:</label>
+        <input type="text" id="name" th:field="*{name}" required />
+
+        <label for="species">Вид:</label>
+        <select id="species" th:field="*{species}" required>
             <option value="Кошка">Кошка</option>
             <option value="Собака">Собака</option>
         </select>
-    </label><br/>
-    <label>Порода: <input type="text" th:field="*{breed}" required /></label><br/>
-    <label>Размер:
-        <select th:field="*{size}" required>
+
+        <label for="breed">Порода:</label>
+        <input type="text" id="breed" th:field="*{breed}" required />
+
+        <label for="size">Размер:</label>
+        <select id="size" th:field="*{size}" required>
             <option value="Маленький">Маленький</option>
             <option value="Средний">Средний</option>
             <option value="Крупный">Крупный</option>
         </select>
-    </label><br/>
-    <label>Возраст:
-        <select th:field="*{age}" required>
+
+        <label for="age">Возраст:</label>
+        <select id="age" th:field="*{age}" required>
             <option th:each="i : ${#numbers.sequence(1, 50)}" th:value="${i}" th:text="${i}"></option>
         </select>
-        <select th:field="*{ageUnit}" required>
+        <select id="ageUnit" th:field="*{ageUnit}" required>
             <option value="years">лет</option>
             <option value="months">месяцев</option>
         </select>
-    </label><br/>
-    <label>Пол:
-        <select th:field="*{gender}" required>
+
+        <label for="gender">Пол:</label>
+        <select id="gender" th:field="*{gender}" required>
             <option value="Девочка">Девочка</option>
             <option value="Мальчик">Мальчик</option>
         </select>
-    </label><br/>
-    <label>Кастрирован/стерилизован:
-        <select th:field="*{sterilized}" required>
+
+        <label for="sterilized">Кастрирован/стерилизован:</label>
+        <select id="sterilized" th:field="*{sterilized}" required>
             <option value="true">Да</option>
             <option value="false">Нет</option>
         </select>
-    </label><br/>
-    <input type="submit" value="Добавить питомца" />
-</form>
+
+        <input type="submit" class="custom-btn" value="Добавить питомца" />
+    </form>
+</div>
+
+<footer class="bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4">
+        <p class="text-center mt-4">&copy; 2024 PetFriend. Все права защищены.</p>
+    </div>
+</footer>
 </body>
 </html>
