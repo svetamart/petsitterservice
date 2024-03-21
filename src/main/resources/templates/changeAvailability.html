@@ -60,8 +60,8 @@
 </head>
 <body>
 <header class="bg-light text-dark py-2">
-  <div class="container container-main d-flex justify-content-between align-items-center px-4">
-    <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+  <div class="container d-flex justify-content-between align-items-center px-4">
+    <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
     <nav>
       <ul class="nav" style="font-size: larger">
         <li class="nav-item"><a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
@@ -77,7 +77,7 @@
 </section>
 
 
-<div class="container mt-5 mb-20 text-lg">
+<div class="container container-main mt-5 mb-20 text-lg">
   <h2 class="mb-10 text-4xl">Изменить доступность</h2>
 
   <form th:action="@{/petSitter/dashboard/changeAvailability}" method="post" th:object="${availability}">

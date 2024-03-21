@@ -11,8 +11,6 @@ public class SitterPageReview {
     private String endDate;
     private String message;
 
-    public SitterPageReview() {
-    }
 
     public static SitterPageReview fromReview(Review review) {
         SitterPageReview sitterPageReview = new SitterPageReview();

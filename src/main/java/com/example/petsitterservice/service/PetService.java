@@ -4,7 +4,7 @@ package com.example.petsitterservice.service;
 import com.example.petsitterservice.model.Pet;
 import com.example.petsitterservice.model.PetOwner;
 import com.example.petsitterservice.model.dto.PetDto;
-import com.example.petsitterservice.repository.PetRepository;
+import com.example.petsitterservice.model.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

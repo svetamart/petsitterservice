@@ -2,9 +2,6 @@ package com.example.petsitterservice.model.dto;
 
 import com.example.petsitterservice.model.PetBoardingRequest;
 import com.example.petsitterservice.model.RequestStatus;
-import com.example.petsitterservice.service.PetBoardingRequestService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OwnerPageBoardingRequest {
 
@@ -23,10 +20,6 @@ public class OwnerPageBoardingRequest {
 
     private boolean hasReview;
 
-    private static final Logger logger = LoggerFactory.getLogger(OwnerPageBoardingRequest.class);
-
-    public OwnerPageBoardingRequest() {
-    }
 
     public String getPetName() {
         return petName;
@@ -148,7 +141,6 @@ public class OwnerPageBoardingRequest {
         if (petBoardingRequest.getStatus() == RequestStatus.ACCEPTED) {
             ownerPageBoardingRequest.setSitterPhone(petBoardingRequest.getSitter().getPhone());
         } else {
-            // Маскирование номера телефона (показывать только последние цифры)
             if (petBoardingRequest.getSitter() == null) {
                 ownerPageBoardingRequest.setSitterPhone("--");
             } else {

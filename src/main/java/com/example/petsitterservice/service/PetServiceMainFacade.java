@@ -22,7 +22,7 @@ public interface PetServiceMainFacade {
     void addAvailabilityDates(PetSitter petSitter, String availableDates);
 
     PetSitter findSitterById(Long id);
-    List<PetSitter> findSuitableSitters(PetBoardingRequest request);
+    List<SuitableSitterDto> findSuitableSitters(PetBoardingRequest request);
 
     List<PetBoardingRequest> getSitterRequests(Long sitterId);
     List<PetBoardingRequest> getUserRequests(Long userId);

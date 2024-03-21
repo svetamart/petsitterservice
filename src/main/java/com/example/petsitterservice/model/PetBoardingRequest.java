@@ -9,15 +9,15 @@ public class PetBoardingRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pet_owner_id")
     private PetOwner user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pet_sitter_id")
     private PetSitter sitter;
 
@@ -41,11 +41,6 @@ public class PetBoardingRequest {
 
     @Column(nullable = true)
     private boolean reviewed;
-
-
-    public PetBoardingRequest() {}
-
-
 
     public PetOwner getUser() {
         return user;

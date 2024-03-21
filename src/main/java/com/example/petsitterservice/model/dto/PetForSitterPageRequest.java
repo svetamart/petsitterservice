@@ -4,6 +4,13 @@ import com.example.petsitterservice.model.Pet;
 
 public class PetForSitterPageRequest {
 
+    private static final String BOY = "мальчик";
+    private static final String GIRL = "девочка";
+    private static final String SMALL = "маленький";
+    private static final String MEDIUM = "средний";
+    private static final String BIG = "крупный";
+
+
     private String name;
     private String species;
     private String breed;
@@ -14,8 +21,6 @@ public class PetForSitterPageRequest {
     private String sterilizedInfo;
     private String sizeInfo;
 
-    public PetForSitterPageRequest() {
-    }
 
     public String getName() {
         return name;
@@ -30,7 +35,7 @@ public class PetForSitterPageRequest {
     }
 
     public void setSpecies(String species, String gender) {
-        if ("мальчик".equalsIgnoreCase(gender) && "Кошка".equalsIgnoreCase(species)) {
+        if (BOY.equalsIgnoreCase(gender) && "Кошка".equalsIgnoreCase(species)) {
             this.species = "кот";
         } else {
             this.species = species.toLowerCase();
@@ -83,13 +88,13 @@ public class PetForSitterPageRequest {
     }
 
     public void setSterilizedInfo(String gender, boolean sterilized) {
-        if ("девочка".equalsIgnoreCase(gender) && !sterilized) {
+        if (GIRL.equalsIgnoreCase(gender) && !sterilized) {
             this.sterilizedInfo = "не стерилизована";
-        } else if ("мальчик".equalsIgnoreCase(gender) && !sterilized) {
+        } else if (BOY.equalsIgnoreCase(gender) && !sterilized) {
             this.sterilizedInfo = "не кастрирован";
-        } else if ("девочка".equalsIgnoreCase(gender) && sterilized) {
+        } else if (GIRL.equalsIgnoreCase(gender) && sterilized) {
             this.sterilizedInfo = "стерилизована";
-        } else if ("мальчик".equalsIgnoreCase(gender) && sterilized) {
+        } else if (BOY.equalsIgnoreCase(gender) && sterilized) {
             this.sterilizedInfo = "кастрирован";
         } else {
             this.sterilizedInfo = "информация о стерилизации/кастрации отсутствует";
@@ -101,21 +106,21 @@ public class PetForSitterPageRequest {
     }
 
     public void setSizeInfo(String size, String gender) {
-        if ("девочка".equalsIgnoreCase(gender)) {
-            if ("маленький".equalsIgnoreCase(size)) {
+        if (GIRL.equalsIgnoreCase(gender)) {
+            if (SMALL.equalsIgnoreCase(size)) {
                 this.sizeInfo = "маленькая";
-            } else if ("средний".equalsIgnoreCase(size)) {
+            } else if (MEDIUM.equalsIgnoreCase(size)) {
                 this.sizeInfo = "средняя";
-            } else if ("крупный".equalsIgnoreCase(size)) {
+            } else if (BIG.equalsIgnoreCase(size)) {
                 this.sizeInfo = "крупная";
             }
-        } else if ("мальчик".equalsIgnoreCase(gender)) {
-            if ("маленький".equalsIgnoreCase(size)) {
-                this.sizeInfo = "маленький";
-            } else if ("средний".equalsIgnoreCase(size)) {
-                this.sizeInfo = "средний";
-            } else if ("крупный".equalsIgnoreCase(size)) {
-                this.sizeInfo = "крупный";
+        } else if (BOY.equalsIgnoreCase(gender)) {
+            if (SMALL.equalsIgnoreCase(size)) {
+                this.sizeInfo = SMALL;
+            } else if (MEDIUM.equalsIgnoreCase(size)) {
+                this.sizeInfo = MEDIUM;
+            } else if (BIG.equalsIgnoreCase(size)) {
+                this.sizeInfo = BIG;
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.example.petsitterservice.controller.web;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,9 @@ import java.lang.reflect.InvocationTargetException;
 
 @Controller
 public class LoginWebController {
+    private static final String LOGIN = "login";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String ERROR = "error";
     private final RestTemplate restTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginWebController.class);
@@ -42,32 +44,32 @@ public class LoginWebController {
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginRequest", new LoginRequest());
-        return "login";
+        return LOGIN;
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequest user, Model model) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public String login(@ModelAttribute LoginRequest user, Model model){
         String apiUrl = "http://localhost:8080/api/login";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<LoginRequest> requestEntity = new HttpEntity<>(user, headers);
 
             ResponseEntity<AuthResponse> responseEntity = restTemplate.postForEntity(apiUrl, requestEntity, AuthResponse.class);
-            if (responseEntity.getBody() != null) {
-                String role = responseEntity.getBody().getUserRole();
-                Long userId = responseEntity.getBody().getUserId();
+            AuthResponse response = responseEntity.getBody();
+            if (response != null) {
+                String role = response.getUserRole();
+                Long userId = response.getUserId();
                 if ("ROLE_OWNER".equals(role)) {
                     return "redirect:/petOwner/dashboard/" + userId;
-                    // return "petOwnerPage";
                 } else if ("ROLE_SITTER".equals(role)) {
                     return "redirect:/petSitter/dashboard/" + userId;
                 } else {
-                    model.addAttribute("error", "Unknown role");
-                    return "login";
+                    model.addAttribute(ERROR, "Unknown role");
+                    return LOGIN;
                 }
             } else {
-            model.addAttribute("error", "Invalid response from server");
-            return "login";
+            model.addAttribute(ERROR, "Invalid response from server");
+            return LOGIN;
         }
     }
 
@@ -100,13 +102,13 @@ public class LoginWebController {
         try {
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                return "redirect:/login";
+                return REDIRECT_LOGIN;
             } else {
-                model.addAttribute("error", "Error during registration. Please try again. Status: " + responseEntity.getStatusCodeValue());
+                model.addAttribute(ERROR, "Error during registration. Please try again. Status: " + responseEntity.getStatusCodeValue());
                 return "redirect:/register/owner";
             }
         } catch (HttpClientErrorException e) {
-            model.addAttribute("error", "Error during registration. Please try again. Exception: " + e.getMessage());
+            model.addAttribute(ERROR, "Error during registration. Please try again. Exception: " + e.getMessage());
             return "redirect:/register/owner";
         }
     }
@@ -122,15 +124,10 @@ public class LoginWebController {
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
 
-        if (responseEntity != null) {
-            System.out.println("NOT NULL");
-            System.out.println(responseEntity.getBody());
-        }
-
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return "redirect:/login";
+            return REDIRECT_LOGIN;
         } else {
-            model.addAttribute("error", "Error during registration. Please try again.");
+            model.addAttribute(ERROR, "Error during registration. Please try again.");
             return "redirect:/register/sitter";
         }
     }
@@ -144,7 +141,7 @@ public class LoginWebController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(logoutUrl, requestEntity, String.class);
-        return "redirect:/login";
+        restTemplate.postForEntity(logoutUrl, requestEntity, String.class);
+        return REDIRECT_LOGIN;
     }
 }

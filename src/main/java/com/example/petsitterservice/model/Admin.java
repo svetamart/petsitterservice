@@ -4,7 +4,7 @@ public class Admin {
 
     private String username;
     private String password;
-    private final String role = "ROLE_ADMIN";
+    private static final String ROLE = "ROLE_ADMIN";
 
     public String getUsername() {
         return username;
@@ -23,6 +23,6 @@ public class Admin {
     }
 
     public String getRole() {
-        return role;
+        return ROLE;
     }
 }

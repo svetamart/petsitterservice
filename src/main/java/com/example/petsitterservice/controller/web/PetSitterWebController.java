@@ -2,8 +2,6 @@ package com.example.petsitterservice.controller.web;
 
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,12 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,8 +21,12 @@ import java.util.List;
 @RequestMapping("/petSitter/dashboard")
 public class PetSitterWebController {
 
+    private static final String ERROR = "error";
+    private static final String USER_ID = "userId";
+    private static final String REDIRECT_DASHBOARD = "redirect:/petSitter/dashboard/";
+    private static final String API_DASHBOARD = "http://localhost:8080/api/petSitters/dashboard/";
+
     private final RestTemplate restTemplate;
-    private static final Logger logger = LoggerFactory.getLogger(PetSitterWebController.class);
 
 
     @Autowired
@@ -38,38 +38,41 @@ public class PetSitterWebController {
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == principal.id")
     public String getUserDashboard(@PathVariable Long userId, Model model) {
-        String url = "http://localhost:8080/api/petSitters/dashboard/" + userId;
+        String url = API_DASHBOARD + userId;
 
         ResponseEntity<PetSitterDashboard> responseEntity = restTemplate.getForEntity(url, PetSitterDashboard.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetSitterDashboard user = responseEntity.getBody();
-            List<SitterPageBoardingRequest> sitterPageRequests = user.getRequests();
-            List<SitterPageReview> sitterReviews = user.getReviews();
+            if (user != null) {
+                List<SitterPageBoardingRequest> sitterPageRequests = user.getRequests();
+                List<SitterPageReview> sitterReviews = user.getReviews();
 
-            model.addAttribute("user", user);
-            model.addAttribute("sitterPageRequests", sitterPageRequests != null ? sitterPageRequests : Collections.emptyList());
-            model.addAttribute("sitterPageReviews", sitterReviews != null ? sitterReviews : Collections.emptyList());
+                model.addAttribute("user", user);
+                model.addAttribute("sitterPageRequests", sitterPageRequests != null ? sitterPageRequests : Collections.emptyList());
+                model.addAttribute("sitterPageReviews", sitterReviews != null ? sitterReviews : Collections.emptyList());
+            }
             return "petSitterPage";
         } else {
-            return "error";
+            return ERROR;
         }
     }
 
     @GetMapping("/{userId}/changeNewOrders")
     public String showChangeNewOrdersPage(@PathVariable("userId") Long userId, Model model) {
-        String url = "http://localhost:8080/api/petSitters/dashboard/" + userId;
+        String url = API_DASHBOARD + userId;
 
         ResponseEntity<PetSitter> responseEntity = restTemplate.getForEntity(url, PetSitter.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            logger.info("showchangeform success");
             PetSitter user = responseEntity.getBody();
-            model.addAttribute("userId", user.getId());
-            model.addAttribute("newOrders", user.isTakingNewOrders());
+            if (user != null) {
+                model.addAttribute(USER_ID, user.getId());
+                model.addAttribute("newOrders", user.isTakingNewOrders());
+            }
             return "changeNewOrders";
         }  else {
-            return "error";
+            return ERROR;
         }
     }
 
@@ -77,24 +80,25 @@ public class PetSitterWebController {
     public String changeNewOrdersStatus(@RequestParam("userId") Long userId, @RequestParam("newOrders") boolean newOrders) {
         String url = "http://localhost:8080/api/petSitters/toggleNewOrders/" + userId + "?newOrders=" + newOrders;
         restTemplate.postForEntity(url, null, Void.class);
-        return "redirect:/petSitter/dashboard/" + userId;
+        return REDIRECT_DASHBOARD + userId;
     }
 
     @GetMapping("/{userId}/changeAvailability")
     public String showChangeAvailabilityPage(@PathVariable("userId") Long userId, Model model) {
-        String url = "http://localhost:8080/api/petSitters/dashboard/" + userId;
+        String url =API_DASHBOARD + userId;
 
         ResponseEntity<PetSitter> responseEntity = restTemplate.getForEntity(url, PetSitter.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            logger.info("showchangeavailabilityform success");
             PetSitter user = responseEntity.getBody();
-            AvailabilityRequest availability = new AvailabilityRequest();
-            model.addAttribute("userId", user.getId());
-            model.addAttribute("availability", availability);
+            if (user!= null) {
+                AvailabilityRequest availability = new AvailabilityRequest();
+                model.addAttribute(USER_ID, user.getId());
+                model.addAttribute("availability", availability);
+            }
             return "changeAvailability";
         }  else {
-            return "error";
+            return ERROR;
         }
     }
 
@@ -109,7 +113,7 @@ public class PetSitterWebController {
 
         restTemplate.postForEntity(url, requestEntity, Void.class);
 
-        return "redirect:/petSitter/dashboard/" + userId;
+        return REDIRECT_DASHBOARD + userId;
     }
 
     @PostMapping("/{userId}/acceptRequest/{requestId}")
@@ -118,10 +122,10 @@ public class PetSitterWebController {
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             redirectAttributes.addFlashAttribute("message", "Вы приняли заявку");
-            return "redirect:/petSitter/dashboard/" + userId;
+            return REDIRECT_DASHBOARD + userId;
         } else {
-            redirectAttributes.addFlashAttribute("error", "Ошибка");
-            model.addAttribute("userId", userId);
+            redirectAttributes.addFlashAttribute(ERROR, "Ошибка");
+            model.addAttribute(USER_ID, userId);
             return "cannotAcceptRequestPage";
         }
     }
@@ -133,9 +137,9 @@ public class PetSitterWebController {
         if (response.getStatusCode() == HttpStatus.OK) {
             redirectAttributes.addFlashAttribute("message", "Заявка отклонена");
         } else {
-            redirectAttributes.addFlashAttribute("error", "Failed to decline request");
+            redirectAttributes.addFlashAttribute(ERROR, "Failed to decline request");
         }
-        return "redirect:/petSitter/dashboard/" + userId;
+        return REDIRECT_DASHBOARD + userId;
     }
 
 }

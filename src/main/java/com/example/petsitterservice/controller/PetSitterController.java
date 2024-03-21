@@ -1,30 +1,24 @@
 package com.example.petsitterservice.controller;
 
-import com.example.petsitterservice.model.PetBoardingRequest;
 import com.example.petsitterservice.model.dto.AvailabilityRequest;
 import com.example.petsitterservice.model.PetSitter;
-import com.example.petsitterservice.model.dto.PersonalRequestDto;
 import com.example.petsitterservice.model.dto.PetSitterDashboard;
-import com.example.petsitterservice.model.dto.SitterPageBoardingRequest;
 import com.example.petsitterservice.service.PetServiceMainFacadeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/petSitters")
-// @PreAuthorize("hasRole('SITTER')")
+@Tag(name="Пет-ситтеры", description="Управление запросами пет-ситтеров")
 public class PetSitterController {
 
     private final PetServiceMainFacadeImpl petSitterService;
-    private static final Logger logger = LoggerFactory.getLogger(PetSitterController.class);
 
     @Autowired
     public PetSitterController(PetServiceMainFacadeImpl petSitterService) {
@@ -32,6 +26,10 @@ public class PetSitterController {
     }
 
     @GetMapping("/dashboard/{sitterId}")
+    @Operation(
+            summary = "Личный кабинет",
+            description = "Выдает личный кабинет пет-ситтера"
+    )
     public ResponseEntity<PetSitterDashboard> getSitterDashboard(@PathVariable Long sitterId) {
         PetSitter sitter = petSitterService.findSitterById(sitterId);
         PetSitterDashboard sitterDashboard = petSitterService.createSitterDashboard(sitter);
@@ -39,6 +37,10 @@ public class PetSitterController {
     }
 
     @PostMapping("/acceptRequest/{requestId}")
+    @Operation(
+            summary = "Принять запрос",
+            description = "Позволяет пет-ситтеру принять запрос на передержку"
+    )
     public ResponseEntity<String> acceptRequest(@PathVariable Long requestId) {
         try {
             petSitterService.acceptRequest(requestId);
@@ -49,12 +51,20 @@ public class PetSitterController {
     }
 
     @PostMapping("/declineRequest/{requestId}")
+    @Operation(
+            summary = "Отклонить запрос",
+            description = "Позволяет пет-ситтеру отклонить запрос на передержку"
+    )
     public ResponseEntity<String> declineRequest(@PathVariable Long requestId) {
         petSitterService.declineRequest(requestId);
         return new ResponseEntity<>("Request declined", HttpStatus.OK);
     }
 
     @PostMapping("/toggleNewOrders/{userId}")
+    @Operation(
+            summary = "Статус поступления новых запросов",
+            description = "Позволяет пет-ситтеру возобносить или приостановить поступление новых запросов на передержку"
+    )
     public ResponseEntity<String> toggleNewOrders(@PathVariable Long userId,
                                              @RequestParam("newOrders") boolean newOrders) {
         petSitterService.updateTakingNewOrders(userId, newOrders);
@@ -62,6 +72,10 @@ public class PetSitterController {
     }
 
     @PostMapping("/changeAvailability/{userId}")
+    @Operation(
+            summary = "Доступные для передержки даты",
+            description = "Позволяет пет-ситтеру настроить даты, в которое он готов брать животных на передержку"
+    )
     public ResponseEntity<String> changeAvailableDates(@PathVariable Long userId,
                                                        @RequestBody AvailabilityRequest request) {
 

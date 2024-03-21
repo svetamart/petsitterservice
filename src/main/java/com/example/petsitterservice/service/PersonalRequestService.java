@@ -1,7 +1,7 @@
 package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.PersonalRequest;
-import com.example.petsitterservice.repository.PersonalRequestRepository;
+import com.example.petsitterservice.model.repository.PersonalRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

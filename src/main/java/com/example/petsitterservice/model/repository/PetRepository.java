@@ -1,4 +1,4 @@
-package com.example.petsitterservice.repository;
+package com.example.petsitterservice.model.repository;
 
 import com.example.petsitterservice.model.Pet;
 import com.example.petsitterservice.model.PetOwner;

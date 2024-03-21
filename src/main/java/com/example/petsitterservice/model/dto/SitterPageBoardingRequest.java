@@ -16,8 +16,6 @@ public class SitterPageBoardingRequest {
     private String comments;
     private RequestStatus status;
 
-    public SitterPageBoardingRequest() {
-    }
 
     public static SitterPageBoardingRequest fromPetBoardingRequest(PetBoardingRequest petBoardingRequest) {
         SitterPageBoardingRequest sitterPageBoardingRequest = new SitterPageBoardingRequest();

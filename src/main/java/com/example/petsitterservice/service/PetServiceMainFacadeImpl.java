@@ -2,8 +2,6 @@ package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,10 @@ import java.util.List;
 @Service
 public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
-    private static final Logger logger = LoggerFactory.getLogger(PetServiceMainFacadeImpl.class);
+    private static final String OWNER = "ROLE_OWNER";
+    private static final String SITTER = "ROLE_SITTER";
+    private static final String ROLE_INVALID = "Invalid user role: ";
+
 
     private final PetService petService;
     private final PetOwnerService userService;
@@ -110,7 +111,7 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
     }
 
     @Override
-    public List<PetSitter> findSuitableSitters(PetBoardingRequest request) {
+    public List<SuitableSitterDto> findSuitableSitters(PetBoardingRequest request) {
         return petSitterService.findSuitableSitters(request);
     }
 
@@ -235,42 +236,27 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
     @Override
     public void deleteUserByRole(String userRole, Long userId) {
         switch (userRole) {
-            case "ROLE_OWNER":
-                userService.deleteById(userId);
-                break;
-            case "ROLE_SITTER":
-                petSitterService.deleteById(userId);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid user role: " + userRole);
+            case OWNER -> userService.deleteById(userId);
+            case SITTER -> petSitterService.deleteById(userId);
+            default -> throw new IllegalArgumentException(ROLE_INVALID + userRole);
         }
     }
 
     @Override
     public void activateAccountByRole(String userRole, Long userId) {
         switch (userRole) {
-            case "ROLE_OWNER":
-                userService.activateAccount(userId);
-                break;
-            case "ROLE_SITTER":
-                petSitterService.activateAccount(userId);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid user role: " + userRole);
+            case OWNER -> userService.activateAccount(userId);
+            case SITTER -> petSitterService.activateAccount(userId);
+            default -> throw new IllegalArgumentException(ROLE_INVALID + userRole);
         }
     }
 
     @Override
     public void deactivateAccountByRole(String userRole, Long userId) {
         switch (userRole) {
-            case "ROLE_OWNER":
-                userService.deactivateAccount(userId);
-                break;
-            case "ROLE_SITTER":
-                petSitterService.deactivateAccount(userId);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid user role: " + userRole);
+            case OWNER -> userService.deactivateAccount(userId);
+            case SITTER -> petSitterService.deactivateAccount(userId);
+            default -> throw new IllegalArgumentException(ROLE_INVALID + userRole);
         }
 
 
@@ -290,8 +276,6 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         List<PetBoardingRequest> requests = user.getRequests();
         List<OwnerPageBoardingRequest> sitterPageRequests = new ArrayList<>();
         for (PetBoardingRequest boardingRequest : requests) {
-            logger.info(String.valueOf(boardingRequest.getId()));
-            logger.info(String.valueOf(boardingRequest.isReviewed()));
             OwnerPageBoardingRequest ownerPageRequest = OwnerPageBoardingRequest.fromPetBoardingRequest(boardingRequest);
 
             sitterPageRequests.add(ownerPageRequest);
@@ -349,8 +333,6 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
         String rating = review.getRating();
         newReview.setRating(parseRating(rating));
-        logger.info("REVIEW RATING");
-        logger.info(String.valueOf(newReview.getRating()));
 
         reviewService.addReview(newReview);
         sitter.addReview(newReview);
@@ -375,6 +357,6 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
     }
 
     private String parseRating(String ratingString) {
-        return ratingString.replaceAll("[^0-9]", "");
+        return ratingString.replaceAll("\\D", "");
     }
 }

@@ -51,10 +51,10 @@ public class PetSitter implements UserDetails {
     private String bio;
 
     @Column(nullable = false)
-    private double hourlyRate; // Часовая ставка
+    private double hourlyRate;
 
     @Column(nullable = false)
-    private double dailyRate; // Суточная ставка
+    private double dailyRate;
 
     @Column(nullable = false)
     private boolean takingNewOrders;
@@ -62,7 +62,6 @@ public class PetSitter implements UserDetails {
     private String phone;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
 
@@ -76,8 +75,6 @@ public class PetSitter implements UserDetails {
 
     @Column(nullable = false)
     private boolean accountEnabled;
-
-
 
     @Transient
     @JsonDeserialize(using = GrantedAuthorityDeserializer.class)

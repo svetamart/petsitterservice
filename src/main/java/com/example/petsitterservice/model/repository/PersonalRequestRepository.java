@@ -1,4 +1,4 @@
-package com.example.petsitterservice.repository;
+package com.example.petsitterservice.model.repository;
 
 import com.example.petsitterservice.model.PersonalRequest;
 import org.springframework.data.jpa.repository.JpaRepository;

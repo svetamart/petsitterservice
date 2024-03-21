@@ -14,9 +14,9 @@ public class Pet {
 
     @Column(nullable = false)
     private String species;
+
     @Column(nullable = false)
     private String breed;
-
 
     @Column(nullable = false)
     private String size;
@@ -30,12 +30,10 @@ public class Pet {
     @Column(nullable = false)
     private boolean sterilized;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
     @JsonIgnore
     private PetOwner owner;
-
-    public Pet () {}
 
     public String getName() {
         return name;

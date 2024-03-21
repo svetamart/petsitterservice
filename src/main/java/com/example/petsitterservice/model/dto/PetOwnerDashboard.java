@@ -15,9 +15,6 @@ public class PetOwnerDashboard {
     private List<Pet> pets = new ArrayList<>();
     private List<OwnerPageBoardingRequest> requests = new ArrayList<>();
 
-    public PetOwnerDashboard() {
-    }
-
     public Long getId() {
         return id;
     }

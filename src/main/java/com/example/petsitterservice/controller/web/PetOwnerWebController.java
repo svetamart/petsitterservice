@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,13 +16,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/petOwner/dashboard")
 public class PetOwnerWebController {
+
+    private static final String DASHBOARD = "dashboard/";
+    private static final String ERROR = "error";
+    private static final String USER_ID = "userId";
+    private static final String ERROR_MESSAGE = "errorMessage";
+    private static final String SUCCESS_MESSAGE = "successMessage";
+    private static final String REDIRECT_DASHBOARD = "redirect:/petOwner/dashboard/";
+
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(PetOwnerWebController.class);
 
@@ -37,13 +43,14 @@ public class PetOwnerWebController {
     @GetMapping("/{userId}")
     // @PreAuthorize("#userId == principal.id")
     public String getUserDashboard(@PathVariable Long userId, Model model) {
-        String url = "http://localhost:8080/api/users/dashboard/" + userId;
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetOwnerDashboard> responseEntity = restTemplate.getForEntity(url, PetOwnerDashboard.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetOwnerDashboard user = responseEntity.getBody();
             List<Pet> pets = user.getPets();
+
             List<OwnerPageBoardingRequest> requests = user.getRequests();
 
             LocalDate currentDate = LocalDate.now();
@@ -52,34 +59,31 @@ public class PetOwnerWebController {
                 LocalDate endDate = LocalDate.parse(request.getEndDate());
                 boolean isDatePastOrPresent = !endDate.isAfter(currentDate) || endDate.isEqual(currentDate);
                 request.setAvailableToReview(isDatePastOrPresent);
-                logger.info(request.toString());
             }
 
             model.addAttribute("requests", requests != null ? requests : Collections.emptyList());
 
             model.addAttribute("user", user);
-            model.addAttribute("userId", user.getId());
+            model.addAttribute(USER_ID, user.getId());
             model.addAttribute("pets", pets != null ? pets : Collections.emptyList());
             return "petOwnerPage";
         } else {
-            return "error";
+            return ERROR;
         }
     }
 
     @GetMapping("/{userId}/addPetForm")
     public String showAddPetForm(Model model, @PathVariable Long userId) {
-        String url = "http://localhost:8080/api/users/dashboard/" + userId;
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetOwner> responseEntity = restTemplate.getForEntity(url, PetOwner.class);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetOwner user = responseEntity.getBody();
-            model.addAttribute("userId", user.getId());
-            logger.info("add pet form called");
-            logger.info(user.toString());
+            model.addAttribute(USER_ID, user.getId());
             model.addAttribute("pet", new PetDto());
             return "addPetForm";
         }  else {
-            return "error";
+            return ERROR;
         }
     }
 
@@ -93,33 +97,33 @@ public class PetOwnerWebController {
 
             HttpEntity<PetDto> request = new HttpEntity<>(pet, headers);
             ResponseEntity<Void> response = restTemplate.exchange(
-                    apiUrl + "/dashboard/" + userId + "/addPet", HttpMethod.POST, request, Void.class);
+                    apiUrl + DASHBOARD + userId + "/addPet", HttpMethod.POST, request, Void.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                model.addAttribute("successMessage", "Pet successfully added");
+                model.addAttribute(SUCCESS_MESSAGE, "Pet successfully added");
             } else {
-                model.addAttribute("errorMessage", "Failed to add pet");
+                model.addAttribute(ERROR_MESSAGE, "Failed to add pet");
             }
         } catch (RestClientException e) {
-            model.addAttribute("errorMessage", "Failed to add pet");
+            model.addAttribute(ERROR_MESSAGE, "Failed to add pet");
         }
-        return "redirect:/petOwner/dashboard/" + userId;
+        return REDIRECT_DASHBOARD + userId;
     }
 
     @GetMapping("/{userId}/addRequestForm")
     public String showAddRequestForm(Model model, @PathVariable Long userId) {
-        String url = "http://localhost:8080/api/users/dashboard/" + userId;
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetOwner> responseEntity = restTemplate.getForEntity(url, PetOwner.class);
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetOwner user = responseEntity.getBody();
             model.addAttribute("user", user);
-            model.addAttribute("userId", user.getId());
+            model.addAttribute(USER_ID, user.getId());
             logger.info("add request form called");
             model.addAttribute("request", new PetBoardingRequestDto());
             return "addRequestForm";
         }  else {
-            return "error";
+            return ERROR;
         }
     }
 
@@ -127,7 +131,7 @@ public class PetOwnerWebController {
     public String addPetBoardingRequest(@PathVariable Long userId, @ModelAttribute PetBoardingRequestDto requestDto, Model model) {
         try {
             ResponseEntity<PetBoardingRequest> responseEntity = restTemplate.postForEntity(
-                    "http://localhost:8080/api/users/dashboard/" + userId + "/createRequest",
+                    apiUrl + DASHBOARD + userId + "/createRequest",
                     requestDto,
                     PetBoardingRequest.class,
                     userId);
@@ -136,33 +140,32 @@ public class PetOwnerWebController {
                 PetBoardingRequest request = responseEntity.getBody();
                 Long requestId = request.getId();
 
-                return "redirect:/petOwner/dashboard/" + userId + "/boardingRequest/" + requestId + "/sitters";
+                return REDIRECT_DASHBOARD + userId + "/boardingRequest/" + requestId + "/sitters";
             } else {
-                return "error";
+                return ERROR;
             }
         } catch (RestClientException e) {
-            model.addAttribute("errorMessage", "Failed to add pet boarding request");
-            return "error";
+            model.addAttribute(ERROR_MESSAGE, "Failed to add pet boarding request");
+            return ERROR;
         }
     }
 
-// показывает ситтеров, подходящих под реквест
     @GetMapping("/{userId}/boardingRequest/{requestId}/sitters")
     public String showSuitableSitters(Model model, @PathVariable Long userId, @PathVariable Long requestId) {
-        String url = "http://localhost:8080/api/users/findSitters/" + requestId;
+        String url = apiUrl + "findSitters/" + requestId;
 
-        ResponseEntity<List<PetSitter>> responseEntity = restTemplate.exchange(
+        ResponseEntity<List<SuitableSitterDto>> responseEntity = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<PetSitter>>() {
+                new ParameterizedTypeReference<List<SuitableSitterDto>>() {
                 }
         );
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            List<PetSitter> sitters = responseEntity.getBody();
+            List<SuitableSitterDto> sitters = responseEntity.getBody();
             model.addAttribute("requestId", requestId);
-            model.addAttribute("userId", userId);
+            model.addAttribute(USER_ID, userId);
             if (sitters == null || sitters.isEmpty()) {
                 model.addAttribute("personalRequest", new PersonalRequestDto());
                 return "sittersNotFound";
@@ -171,19 +174,19 @@ public class PetOwnerWebController {
                 return "suitableSittersPage";
             }
         } else {
-            return "error";
+            return ERROR;
         }
     }
 
     @PostMapping("/{userId}/chooseSitter/{requestId}/{sitterId}")
     public String chooseSitter(Model model, @PathVariable Long userId, @PathVariable Long requestId, @PathVariable Long sitterId) {
-        String url = "http://localhost:8080/api/users/requests/" + requestId + "/chooseSitter/" + sitterId;
+        String url = apiUrl + "requests/" + requestId + "/chooseSitter/" + sitterId;
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, null, String.class);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            return "redirect:/petOwner/dashboard/" + userId;
+            return REDIRECT_DASHBOARD + userId;
         } else {
-            model.addAttribute("errorMessage", "Failed to choose pet sitter.");
+            model.addAttribute(ERROR_MESSAGE, "Failed to choose pet sitter.");
             return "errorPage";
         }
     }
@@ -199,23 +202,23 @@ public class PetOwnerWebController {
 
             HttpEntity<PersonalRequestDto> request = new HttpEntity<>(requestDTO, headers);
             ResponseEntity<String> response = restTemplate.exchange(
-                    "http://localhost:8080/api/users/" + userId + "/makePersonalRequest",
+                    apiUrl + userId + "/makePersonalRequest",
                     HttpMethod.POST,
                     request,
                     String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                model.addAttribute("successMessage", "Personal request submitted");
-                return "redirect:/petOwner/dashboard/" + userId;
+                model.addAttribute(SUCCESS_MESSAGE, "Personal request submitted");
+                return REDIRECT_DASHBOARD + userId;
             } else {
-                model.addAttribute("errorMessage", "Failed to submit personal request");
-                return "error";
+                model.addAttribute(ERROR_MESSAGE, "Failed to submit personal request");
+                return ERROR;
             }
     }
 
     @GetMapping("/{userId}/addReviewForm/{requestId}")
     public String showAddReviewForm(Model model, @PathVariable Long requestId, @PathVariable Long userId) {
-        model.addAttribute("userId", userId);
+        model.addAttribute(USER_ID, userId);
         model.addAttribute("request", requestId);
         model.addAttribute("review", new ReviewDto());
         return "addReviewForm";
@@ -226,24 +229,24 @@ public class PetOwnerWebController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String apiUrl = "http://localhost:8080/api/users/dashboard/addReview";
+        String url = apiUrl + "dashboard/addReview";
 
         reviewDto.setRequestId(requestId);
 
         HttpEntity<ReviewDto> requestEntity = new HttpEntity<>(reviewDto, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
-                    apiUrl,
+                    url,
                     HttpMethod.POST,
                     requestEntity,
                     String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                model.addAttribute("successMessage", "Review successfully added");
-                return "redirect:/petOwner/dashboard/" + userId;
+                model.addAttribute(SUCCESS_MESSAGE, "Review successfully added");
+                return REDIRECT_DASHBOARD + userId;
             } else {
-                model.addAttribute("errorMessage", "Failed adding review");
-                return "error";
+                model.addAttribute(ERROR_MESSAGE, "Failed adding review");
+                return ERROR;
             }
     }
 

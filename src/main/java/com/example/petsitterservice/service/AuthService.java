@@ -32,9 +32,7 @@ public class AuthService {
         try {
             Authentication authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-            if (authentication != null && authentication.isAuthenticated()) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 PetOwner petOwner = userService.getUserByUsername(username);
                 PetSitter petSitter = null;
@@ -62,11 +60,9 @@ public class AuthService {
                     logger.error("Authentication failed: User not found");
                     return new AuthResponse("Authentication failed: User not authenticated", null, null);
                 }
-            }
         } catch (AuthenticationException e) {
             return new AuthResponse("Authentication failed: " + e.getMessage(), null, null);
         }
-        return new AuthResponse("Authentication failed: Unexpected error", null, null);
     }
 
     public boolean isAuthorizedToAccessDashboard(Long userId) {

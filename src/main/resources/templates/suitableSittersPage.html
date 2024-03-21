@@ -100,15 +100,18 @@
                     <div class="card-divider"></div>
                     <p class="card-text" th:text="${sitter.bio}"></p>
                     <div class="card-divider"></div>
-                    <p class="card-text">Город: <span th:text="${sitter.city}"></span></p>
-                    <p class="card-text">Опыт: <span th:text="${sitter.experience}"></span></p>
-                    <p class="card-text">Каких животных берет: <span th:text="${sitter.acceptedPets}"></span></p>
-                    <p class="card-text">Свои питомцы: <span th:text="${sitter.hasOwnPets ? 'Да' : 'Нет'}"></span></p>
+                    <p class="card-text"><strong>Город:</strong> <span th:text="${sitter.city}"></span></p>
+                    <p class="card-text"><strong>Опыт:</strong> <span th:text="${sitter.experience}"></span></p>
+                    <p class="card-text">
+                        <strong>Каких животных берет:</strong>
+                        <span th:each="pet, iterStat : ${sitter.acceptedPets}" th:text="${pet.toLowerCase()} + ' '"></span>
+                    </p>
+                    <p class="card-text"><strong>Свои питомцы:</strong> <span th:text="${sitter.hasOwnPets ? 'да' : 'нет'}"></span></p>
                     <div class="card-divider"></div>
                     <p class="rate" th:text="${'От ' + sitter.dailyRate + ' рублей в день'}"></p>
                     <p class="rate" th:text="${'От ' + sitter.hourlyRate + ' рублей в час'}"></p>
                     <form th:action="@{/petOwner/dashboard/{userId}/chooseSitter/{requestId}/{sitterId}(userId=${userId}, requestId=${requestId}, sitterId=${sitter.id})}" method="post">
-                        <button type="submit" class="custom-btn">Выбрать</button>
+                        <button type="submit" class="btn primary">Выбрать</button>
                     </form>
                 </div>
             </div>

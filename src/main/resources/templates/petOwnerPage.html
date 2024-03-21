@@ -110,7 +110,7 @@
             <ul class="nav" style="font-size: larger">
                 <li class="nav-item"><a th:href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
                 <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
-                <li class="nav-item"><a th:href="/logout" class="nav-link text-dark">Выйти</a></li>
+                <li class="nav-item"><a th:href="@{/logout}" class="nav-link text-dark">Выйти</a></li>
             </ul>
         </nav>
     </div>
@@ -121,7 +121,7 @@
         <h1 class="text-7xl font-bold text-brown my-5" th:text="${user.getUsername()}"></h1>
         <h2 class="text-4xl font-bold text-brown2 my-3" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></h2>
         <p class="text-2xl text-brown2 flex items-center justify-center my-1">
-            <i class="fas fa-map-marker-alt mr-2" th:text="${user.getCity()}"></i>
+            <i class="fas fa-map-marker-alt mr-2" th:text="' ' + ${user.getCity()}"></i>
         </p>
     </div>
 </section>
@@ -143,12 +143,12 @@
                                 <div class="pet-info">
                                     <p class="card-text mb-0"><strong>Порода:</strong> <span th:text="${pet.getBreed().toLowerCase()}"></span></p>
                                     <p class="card-text mb-0"><strong>Возраст:</strong> <span th:text="${pet.getAge().toLowerCase()}"></span></p>
-                                    <p class="card-text mb-0"><strong>Пол:</strong> <span th:text="${pet.getGender()}"></span></p>
+                                    <p class="card-text mb-0"><strong>Пол:</strong> <span th:text="${pet.getGender().toLowerCase()}"></span></p>
                                     <p class="card-text mb-0"><strong>Кастрация/стерилизация:</strong> <span th:text="${pet.isSterilized() ? 'да' : 'нет'}"></span></p>
                                 </div>
                             </div>
                             <div>
-                                <i th:class="${pet.getSpecies() == 'Собака' ? 'fas fa-dog' : 'fas fa-cat'}" style="font-size: 2rem;"></i>
+                                <i th:class="${pet.getSpecies() == 'собака' ? 'fas fa-dog' : 'fas fa-cat'}" style="font-size: 2rem;"></i>
                             </div>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
         <!-- Блок с запросами на передержку -->
         <h3 class="mt-8 text-4xl font-bold text-center my-10">Запросы на передержку</h3>
         <div class="row text-lg">
-            <div th:if="${sitterPageRequests}" th:each="request : ${sitterPageRequests}" class="col-md-5 mb-5">
+            <div th:if="${requests}" th:each="request : ${requests}" class="col-md-5 mb-5">
                 <div class="card">
                     <div class="card-body m-2">
                         <h5 class="card-title" th:text="${request.getPetName()}"></h5>
@@ -176,6 +176,7 @@
                         <p class="card-text"><strong>Желаемый опыт пет-ситтера:</strong> <span th:text="${request.getSitterExperience()}"></span></p>
                         <p class="card-text"><strong>Пет-ситтер:</strong> <span th:text="${request.getSitterName()}"></span></p>
                         <p class="card-text"><strong>Телефон пет-ситтера:</strong> <span th:text="${request.getSitterPhone()}"></span></p>
+                        <p class="card-text"><strong>Комментарии:</strong> <span th:text="${request.getComments()}"></span></p>
                         <p class="card-text"><strong>Статус заявки:</strong>
                             <span th:if="${request.getStatus().toString() == 'PENDING'}">ожидает рассмотрения</span>
                             <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>

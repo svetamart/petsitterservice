@@ -1,10 +1,5 @@
 package com.example.petsitterservice.model.dto;
 
-import com.example.petsitterservice.model.PetBoardingRequest;
-import com.example.petsitterservice.model.Review;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +26,8 @@ public class PetSitterDashboard {
 
     private List<String> availabilityDates;
 
-
     private List<SitterPageBoardingRequest> requests = new ArrayList<>();
 
-    public PetSitterDashboard() {
-    }
 
     public Long getId() {
         return id;

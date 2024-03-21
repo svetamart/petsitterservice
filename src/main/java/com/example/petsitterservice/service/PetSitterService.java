@@ -1,8 +1,10 @@
 package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.*;
-import com.example.petsitterservice.repository.PetBoardingRequestRepository;
-import com.example.petsitterservice.repository.PetSitterRepository;
+import com.example.petsitterservice.model.dto.SitterPageReview;
+import com.example.petsitterservice.model.dto.SuitableSitterDto;
+import com.example.petsitterservice.model.repository.PetBoardingRequestRepository;
+import com.example.petsitterservice.model.repository.PetSitterRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +73,6 @@ public class PetSitterService {
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         request.setStatus(RequestStatus.DECLINED);
-        logger.info("DECLINING REQUEST");
         requestRepository.save(request);
     }
 
@@ -116,7 +117,7 @@ public class PetSitterService {
         return dates;
     }
 
-    public List<PetSitter> findSuitableSitters(PetBoardingRequest request) {
+    public List<SuitableSitterDto> findSuitableSitters(PetBoardingRequest request) {
         List<PetSitter> allSitters = petSitterRepository.findAll();
 
         String startDate = request.getStartDate();
@@ -126,6 +127,7 @@ public class PetSitterService {
         PetOwner user = request.getUser();
 
         List<PetSitter> suitableSitters = allSitters.stream()
+                .filter(petSitter -> user.isAccountEnabled())
                 .filter(petSitter -> user.getCity().equals(petSitter.getCity()))
                 .filter(petSitter -> isDateRangeAvailable(petSitter.getAvailabilityDates(), startDate, endDate))
                 .filter(petSitter -> isSpeciesAccepted(petSitter, pet))
@@ -138,7 +140,14 @@ public class PetSitterService {
             request.setStatus(RequestStatus.UNPROCESSED);
             requestRepository.save(request);
         }
-        return suitableSitters;
+
+        List<SuitableSitterDto> result = new ArrayList<>();
+        for (PetSitter sitter : suitableSitters) {
+            SuitableSitterDto resultSitter = SuitableSitterDto.fromSitter(sitter);
+            result.add(resultSitter);
+
+        }
+        return result;
     }
 
     private boolean isSpeciesAccepted(PetSitter petSitter, Pet pet) {
@@ -201,7 +210,7 @@ public class PetSitterService {
             dogSize = dogSize.substring(0, dogSize.length() - 2);
         }
         for (String acceptedSize : petSitter.getAcceptedDogSizes()) {
-            if (acceptedSize.toLowerCase().startsWith(dogSize)) {
+            if (acceptedSize.toLowerCase().startsWith(dogSize.toLowerCase())) {
                 return true;
             }
         }

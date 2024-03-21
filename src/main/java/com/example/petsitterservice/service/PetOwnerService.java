@@ -2,7 +2,7 @@ package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.PersonalRequest;
 import com.example.petsitterservice.model.PetOwner;
-import com.example.petsitterservice.repository.PetOwnerRepository;
+import com.example.petsitterservice.model.repository.PetOwnerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

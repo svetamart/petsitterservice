@@ -53,8 +53,6 @@ public class PetOwner implements UserDetails {
     private List<PersonalRequest> personalRequests = new ArrayList<>();
 
 
-    public PetOwner() {
-    }
 
     public Long getId() {
         return id;

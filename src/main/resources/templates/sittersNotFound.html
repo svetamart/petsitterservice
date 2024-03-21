@@ -60,7 +60,7 @@
 <body>
 <header class="bg-light text-dark py-2">
   <div class="container d-flex justify-content-between align-items-center px-4">
-    <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+    <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
     <nav>
       <ul class="nav" style="font-size: larger">
         <li class="nav-item"><a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
@@ -70,7 +70,7 @@
   </div>
 </header>
 
-<section class="bg-cover bg-center py-40" style="background-image: url('images/lewis-roberts-3It9HpI155s-unsplash.jpg'); background-position: calc(100%) -250px">
+<section class="bg-cover bg-center py-40" style="background-image: url('/images/lewis-roberts-3It9HpI155s-unsplash.jpg'); background-position: calc(100%) -250px">
   <div class="container mx-auto px-4">
   </div>
 </section>
@@ -92,7 +92,7 @@
     <button type="submit" class="custom-btn">Отправить запрос</button>
   </form>
 
-  <a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="custom-btn text-lg mt-4">Вернуться в личный кабинет</a>
+  <a th:href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="custom-btn text-lg mt-4">Вернуться в личный кабинет</a>
 </div>
 
 <footer class="bg-gray-900 text-white py-8">

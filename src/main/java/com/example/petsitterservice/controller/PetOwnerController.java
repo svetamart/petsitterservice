@@ -3,22 +3,22 @@ package com.example.petsitterservice.controller;
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.*;
 import com.example.petsitterservice.service.PetServiceMainFacadeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name="Владельцы питомцев", description="Управление запросами владельцев питомцев")
+
 public class PetOwnerController {
 
     private final PetServiceMainFacadeImpl mainService;
-    private static final Logger logger = LoggerFactory.getLogger(PetOwnerController.class);
 
 
     @Autowired
@@ -27,6 +27,10 @@ public class PetOwnerController {
     }
 
     @GetMapping("/{username}")
+    @Operation(
+            summary = "Поиск по имени",
+            description = "Позволяет найти владельца питомца по юзернейму"
+    )
     // @PreAuthorize("#userId == principal.id")
     public ResponseEntity<PetOwner> getUserByUsername(@PathVariable String username) {
         PetOwner user = mainService.getUserByUsername(username);
@@ -34,12 +38,15 @@ public class PetOwnerController {
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            logger.info("user == null");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/dashboard/{userId}")
+    @Operation(
+            summary = "Личный кабинет",
+            description = "Выдает личный кабинет владельца питомца"
+    )
     public ResponseEntity<PetOwnerDashboard> getUserDashboard(@PathVariable Long userId) {
         PetOwner user = mainService.getUserById(userId);
         if (user == null) {
@@ -51,6 +58,10 @@ public class PetOwnerController {
     }
 
     @GetMapping("/dashboard/{userId}/myPets")
+    @Operation(
+            summary = "Список питомцев",
+            description = "Выводит список питомцев пользователя"
+    )
     public ResponseEntity<List<Pet>> getPets(@PathVariable Long userId) {
         PetOwner user = mainService.getUserById(userId);
         if (user == null) {
@@ -62,15 +73,16 @@ public class PetOwnerController {
     }
 
     @PostMapping("/dashboard/{userId}/addPet")
+    @Operation(
+            summary = "Добавление питомца",
+            description = "Добавляет питомца в список пользователя"
+    )
     public ResponseEntity<String> addPet(@PathVariable Long userId, @RequestBody PetDto pet) {
         Long id = pet.getUserId();
         PetOwner user = mainService.getUserById(id);
         if (user == null) {
-            logger.info("user not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            logger.info("adding pet");
-            logger.info(pet.toString());
             mainService.addPet(pet, user);
             return ResponseEntity.ok("Pet successfully added.");
         }
@@ -78,6 +90,10 @@ public class PetOwnerController {
 
 
     @PostMapping("/dashboard/{userId}/createRequest")
+    @Operation(
+            summary = "Создание запроса на передержку",
+            description = "Создает запрос на передержку домашнего животного"
+    )
     public ResponseEntity<PetBoardingRequest> createPetBoardingRequest(@PathVariable Long userId,
                                                                               @RequestBody PetBoardingRequestDto requestDto) {
 
@@ -88,17 +104,25 @@ public class PetOwnerController {
     }
 
     @GetMapping("/findSitters/{requestId}")
-    public ResponseEntity<List<PetSitter>> findSuitableSitters(
+    @Operation(
+            summary = "Поиск подходящих пет-ситтеров",
+            description = "Находит пет-ситтеров, подходящих под требования запроса о передержке"
+    )
+    public ResponseEntity<List<SuitableSitterDto>> findSuitableSitters(
             @PathVariable Long requestId) {
 
         PetBoardingRequest request = mainService.findRequestById(requestId);
-        List<PetSitter> suitableSitters = mainService.findSuitableSitters(request);
+        List<SuitableSitterDto> suitableSitters = mainService.findSuitableSitters(request);
 
         return new ResponseEntity<>(suitableSitters, HttpStatus.OK);
     }
 
 
     @PostMapping("/requests/{requestId}/chooseSitter/{sitterId}")
+    @Operation(
+            summary = "Выбор пет-ситтера",
+            description = "Позволяет владельцу питомца выбрать понравившегося пет-ситтера и отправить ему запрос"
+    )
     public ResponseEntity<String> chooseSitter(@PathVariable Long requestId, @PathVariable Long sitterId) {
         PetSitter sitter = mainService.findSitterById(sitterId);
         if (sitter != null) {
@@ -109,13 +133,20 @@ public class PetOwnerController {
     }
 
     @PostMapping("/{userId}/makePersonalRequest")
+    @Operation(
+            summary = "Персональная заявка",
+            description = "Позволяет пользователю создать персональную заявку"
+    )
     public ResponseEntity<String> makePersonalRequest (@PathVariable Long userId, @RequestBody PersonalRequestDto requestDto) {
-        logger.info("Creating personal request API");
         mainService.makePersonalRequest(requestDto);
         return new ResponseEntity<>("Personal request successfully created", HttpStatus.OK);
     }
 
     @PostMapping("/dashboard/addReview")
+    @Operation(
+            summary = "Добавление отзыва",
+            description = "Позволяет пользователю оставить отзыв о пет-ситтере"
+    )
     public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
         mainService.createReview(review);
         return ResponseEntity.ok("Review successfully added.");

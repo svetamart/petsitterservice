@@ -59,7 +59,7 @@
 <body>
 <header class="bg-light text-dark py-2">
     <div class="container d-flex justify-content-between align-items-center px-4">
-        <img src="images/logo.png" alt="Logo" class="h-15 w-40">
+        <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
         <nav>
             <ul class="nav" style="font-size: larger">
                 <li class="nav-item"><a href="@{/petOwner/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
@@ -102,7 +102,6 @@
         <label for="sitterExperience">Опыт ситтера:</label>
         <select id="sitterExperience" th:field="*{sitterExperience}" required>
             <option value="Неважно">Неважно</option>
-            <option value="Меньше года">Меньше года</option>
             <option value="Больше 1 года">Больше 1 года</option>
             <option value="Больше 3 лет">Больше 3 лет</option>
             <option value="Больше 6 лет">Больше 6 лет</option>

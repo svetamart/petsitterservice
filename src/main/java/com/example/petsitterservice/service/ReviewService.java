@@ -2,7 +2,7 @@ package com.example.petsitterservice.service;
 
 
 import com.example.petsitterservice.model.Review;
-import com.example.petsitterservice.repository.ReviewRepository;
+import com.example.petsitterservice.model.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers("/petSitter/dashboard/**").hasRole("SITTER")
                                 .requestMatchers("/api/petSitters/dashboard/**").permitAll()
                                 .requestMatchers("/main/**").permitAll()
+                                .requestMatchers("/api/main/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
                                 .requestMatchers("/login/**").permitAll()
                                 .requestMatchers("/api/registerOwner").permitAll()

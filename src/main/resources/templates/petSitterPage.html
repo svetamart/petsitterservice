@@ -24,6 +24,11 @@
              padding-left: 10rem;
              padding-right: 10rem;
          }
+         .card-divider {
+          border-top: 1px solid #ccc;
+          margin-top: 10px;
+          margin-bottom: 15px;
+        }
          .custom-btn {
           background-color: #8B6446;
           color: #fff;
@@ -71,7 +76,7 @@
       <ul class="nav" style="font-size: larger">
         <li class="nav-item"><a th:href="@{/petSitter/dashboard/{userId}(userId=${userId})}" class="nav-link text-dark">Мой профиль</a></li>
         <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
-        <li class="nav-item"><a th:href="/logout" class="nav-link text-dark">Выйти</a></li>
+        <li class="nav-item"><a th:href="@{/logout}" class="nav-link text-dark">Выйти</a></li>
       </ul>
     </nav>
   </div>
@@ -82,7 +87,7 @@
     <h1 class="text-7xl font-bold text-brown my-5" th:text="${user.getUsername()}"></h1>
     <h2 class="text-4xl font-bold text-brown2 my-3" th:text="${user.getName()} + ' ' + ${user.getLastName()}"></h2>
     <p class="text-2xl text-brown2 flex items-center justify-center my-1">
-      <i class="fas fa-map-marker-alt mr-2" th:text="${user.getCity()}"></i>
+      <i class="fas fa-map-marker-alt mr-2" th:text="' ' + ${user.getCity()}"></i>
     </p>
   </div>
 </section>
@@ -102,7 +107,7 @@
   <div class="form-group" style="margin-top: 40px">
     <!-- Календарь доступности ситтера и кнопка для изменения -->
     <h3 class="mt-8 text-4xl font-bold text-center my-4">Мой календарь</h3>
-    <select class="custom-select" disabled >
+    <select class="custom-select">
       <option th:each="date : ${user.getAvailabilityDates()}" th:value="${date}" th:text="${date}"></option>
     </select>
     <a class="custom-btn btn-sm" th:href="@{/petSitter/dashboard/{userId}/changeAvailability(userId=${userId})}">Изменить</a>
@@ -111,10 +116,10 @@
   <!-- Блок с запросами на передержку -->
   <h3 class="mt-8 text-4xl font-bold text-center my-10">Запросы на передержку</h3>
   <div class="row text-lg">
-    <div th:if="${sitterPageRequests}" th:each="request : ${sitterPageRequests}" class="col-md-4 mb-4">
+    <div th:if="${sitterPageRequests}" th:each="request : ${sitterPageRequests}" class="col-md-5 mb-5">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title" th:text="${request.getPet().getName()}"></h5>
+          <h5 class="card-title font-bold text-2xl" th:text="${request.getPet().getName()}"></h5>
           <p class="card-text">
             <span th:text="${request.getPet().getSpecies()}"></span>,
             <span th:text="${request.getPet().getBreed()}"></span>,
@@ -123,12 +128,14 @@
             <span th:text="${request.getPet().getGender()}"></span>,
             <span th:text="${request.getPet().getSterilizedInfo()}"></span>
           </p>
+          <div class="card-divider"></div>
           <p class="card-text"><strong>Владелец:</strong> <span th:text="${request.getUserName()}"></span></p>
           <p class="card-text"><strong>с:</strong> <span th:text="${request.getStartDate()}"></span></p>
           <p class="card-text"><strong>по:</strong> <span th:text="${request.getEndDate()}"></span></p>
           <p class="card-text"><strong>Можно с другими животными?</strong>
             <span th:text="${request.isOtherPetsAccepted() ? 'да' : 'нет'}"></span>
           </p>
+          <p class="card-text"><strong>Комментарии:</strong> <span th:text="${request.getComments()}"></span></p>
           <p class="card-text"><strong>Статус заявки:</strong>
             <span th:if="${request.getStatus().toString() == 'PENDING'}">ожидает рассмотрения</span>
             <span th:if="${request.getStatus().toString() == 'ACCEPTED'}">принята</span>
@@ -160,10 +167,11 @@
             <h5 class="card-title" th:text="${review.getUserName()}"></h5>
             <p class="card-text">
               <span th:each="i : ${#numbers.sequence(1, review.rating)}">
-              <img src="/images/star.png" alt="Star Icon" class="star-icon" style="display: inline-block;">
+              <img src="/images/star.png" alt="Star Icon" class="star-icon" style="display: inline-block; width: 15px; height: 15px">
               </span>
             </p>
-            <p class="card-text">Питомец <span th:text="${review.getPetName()}"></span>, был в гостях с <span th:text="${review.getStartDate()}"></span> по <span th:text="${review.getEndDate()}"></span></p>
+            <p class="card-text text-sm">Питомец <span th:text="${review.getPetName()}"></span>, был в гостях с <span th:text="${review.getStartDate()}"></span> по <span th:text="${review.getEndDate()}"></span></p>
+            <div class="card-divider"></div>
             <p class="card-text" th:text="${review.getMessage()}"></p>
           </div>
         </div>

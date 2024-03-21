@@ -1,6 +1,7 @@
 package com.example.petsitterservice.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,12 +15,10 @@ public class Review {
     @Column(nullable = false)
     private String rating;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "request_id")
+    @JsonIgnore
     private PetBoardingRequest request;
-
-    public Review() {
-    }
 
     public String getMessage() {
         return message;

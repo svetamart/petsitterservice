@@ -2,11 +2,9 @@ package com.example.petsitterservice.service;
 
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.PetBoardingRequestDto;
-import com.example.petsitterservice.repository.PetBoardingRequestRepository;
-import com.example.petsitterservice.repository.PetOwnerRepository;
-import com.example.petsitterservice.repository.PetSitterRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.petsitterservice.model.repository.PetBoardingRequestRepository;
+import com.example.petsitterservice.model.repository.PetOwnerRepository;
+import com.example.petsitterservice.model.repository.PetSitterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ public class PetBoardingRequestService {
     private final PetBoardingRequestRepository petBoardingRequestRepository;
     private final PetSitterRepository petSitterRepository;
     private final PetOwnerRepository petOwnerRepository;
-    private static final Logger logger = LoggerFactory.getLogger(PetBoardingRequestService.class);
 
     @Autowired
     public PetBoardingRequestService(PetBoardingRequestRepository petBoardingRequestRepository,

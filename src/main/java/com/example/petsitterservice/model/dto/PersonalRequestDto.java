@@ -7,8 +7,6 @@ public class PersonalRequestDto {
     private String name;
     private String phone;
 
-    public PersonalRequestDto() {
-    }
 
     public Long getUserId() {
         return userId;
