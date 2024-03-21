@@ -5,6 +5,7 @@ import com.example.petsitterservice.model.PetOwner;
 import com.example.petsitterservice.model.PetSitter;
 import com.example.petsitterservice.service.PetServiceMainFacadeImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,9 @@ public class MainController {
             summary = "Удаление пользователя",
             description = "Позволяет удалить пользователя"
     )
-    public ResponseEntity<String> deleteUser(@PathVariable String userRole, @PathVariable Long userId) {
+    public ResponseEntity<String> deleteUser(
+            @PathVariable @Parameter(description = "Роль пользователя") String userRole,
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId) {
         try {
             mainService.deleteUserByRole(userRole, userId);
             return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
@@ -67,7 +70,9 @@ public class MainController {
             summary = "Активация аккаунта",
             description = "Позволяет активировать пользовательский аккаунт"
     )
-    public ResponseEntity<String> activateAccount(@PathVariable String userRole, @PathVariable Long userId) {
+    public ResponseEntity<String> activateAccount(
+            @PathVariable @Parameter(description = "Роль пользователя") String userRole,
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId) {
         try {
             mainService.activateAccountByRole(userRole, userId);
             return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
@@ -80,10 +85,12 @@ public class MainController {
 
     @PostMapping("/deactivateAccount/{userRole}/{userId}")
     @Operation(
-            summary = "Дективация аккаунта",
+            summary = "Деактивация аккаунта",
             description = "Позволяет деактивировать пользовательский аккаунт"
     )
-    public ResponseEntity<String> deactivateAccount(@PathVariable String userRole, @PathVariable Long userId) {
+    public ResponseEntity<String> deactivateAccount(
+            @PathVariable @Parameter(description = "Роль пользователя") String userRole,
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId) {
         try {
             mainService.deactivateAccountByRole(userRole, userId);
             return new ResponseEntity<>("Account deactivated successfully", HttpStatus.OK);
@@ -99,7 +106,7 @@ public class MainController {
             summary = "Удаление отзыва",
             description = "Позволяет удалить отзыв о пет-ситтере"
     )
-    public ResponseEntity<String> deleteReview (@PathVariable Long id) {
+    public ResponseEntity<String> deleteReview (@PathVariable @Parameter(description = "Идентификатор отзыва") Long id) {
         mainService.deleteReview(id);
         return new ResponseEntity<>("Review deleted successfully", HttpStatus.OK);
     }

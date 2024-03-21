@@ -1,5 +1,8 @@
 package com.example.petsitterservice.model.dto;
 
+/**
+ * Класс для передачи данных из формы создания отзыва
+ */
 public class ReviewDto {
     private String message;
     private String rating;

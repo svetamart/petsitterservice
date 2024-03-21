@@ -3,6 +3,9 @@ package com.example.petsitterservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+/**
+ * Класс питомца
+ */
 @Entity
 public class Pet {
     @Id

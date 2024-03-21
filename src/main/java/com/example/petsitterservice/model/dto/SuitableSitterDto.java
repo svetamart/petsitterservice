@@ -4,6 +4,9 @@ import com.example.petsitterservice.model.PetSitter;
 
 import java.util.List;
 
+/**
+ * Класс для отображения карточек на странице с подходящими для запроса пет-ситтерами
+ */
 public class SuitableSitterDto {
 
     private Long id;

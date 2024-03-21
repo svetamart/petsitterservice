@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
+/**
+ * Класс пет-ситтера
+ */
 @Entity
 @Table(name = "pet_sitters")
 public class PetSitter implements UserDetails {

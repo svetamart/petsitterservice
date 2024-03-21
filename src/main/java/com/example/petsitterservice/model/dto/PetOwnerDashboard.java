@@ -5,6 +5,9 @@ import com.example.petsitterservice.model.Pet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для отображения личного кабинета владельца питомцев
+ */
 public class PetOwnerDashboard {
 
     private Long id;

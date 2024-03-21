@@ -1,9 +1,11 @@
 package com.example.petsitterservice.model.dto;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для передачи данных из формы регистрации пет-ситтера
+ */
 public class SitterRequest {
     private String username;
     private String password;

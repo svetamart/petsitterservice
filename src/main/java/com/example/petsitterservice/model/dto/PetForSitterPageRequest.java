@@ -2,6 +2,10 @@ package com.example.petsitterservice.model.dto;
 
 import com.example.petsitterservice.model.Pet;
 
+/**
+ * Класс для отображения информации о питомце в карточке запроса на передержку в личном кабинете пет-ситтера
+ */
+
 public class PetForSitterPageRequest {
 
     private static final String BOY = "мальчик";

@@ -3,6 +3,10 @@ package com.example.petsitterservice.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс для отображения личного кабинета пет-ситтера
+ */
+
 public class PetSitterDashboard {
 
     private Long id;

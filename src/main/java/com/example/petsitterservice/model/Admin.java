@@ -1,5 +1,8 @@
 package com.example.petsitterservice.model;
 
+/**
+ * Класс администратора
+ */
 public class Admin {
 
     private String username;

@@ -41,7 +41,7 @@
         <img src="/images/logo.png" alt="Logo" class="h-15 w-40">
         <nav>
             <ul class="nav" style="font-size: larger">
-                <li class="nav-item"><a href="/login" class="nav-link text-dark">Мой профиль</a></li>
+                <li class="nav-item"><a href="/success" class="nav-link text-dark">Мой профиль</a></li>
                 <li class="nav-item"><a href="/main" class="nav-link text-dark">Главная</a></li>
             </ul>
         </nav>
@@ -57,14 +57,14 @@
 </section>
 
 <div class="container login-container">
-    <form th:action="@{/login}" th:object="${loginRequest}" method="post">
+    <form action="/login" method="post">
         <div class="form-group mb-4">
             <label for="username" class="text-xl mb-1">Имя пользователя:</label>
-            <input type="text" class="form-control" id="username" th:field="*{username}" required>
+            <input type="text" class="form-control" id="username" name="username" required>
         </div>
         <div class="form-group mb-4">
             <label for="password" class="text-xl mb-2">Пароль:</label>
-            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+            <input type="password" class="form-control" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-lg custom-btn">Войти</button>
     </form>

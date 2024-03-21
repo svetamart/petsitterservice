@@ -7,8 +7,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+/**
+ * PetServiceMainFacadeImpl - реализация интерфейса PetServiceMainFacade.
+ * Этот класс является фасадом для работы с основными операциями приложения,
+ * связанными с питомцами, пользователями (владельцами и пет-ситтерами),
+ * запросами на передержку и отзывами.
+ */
 
 @Service
 public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
@@ -29,6 +36,17 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
 
     private final ReviewService reviewService;
 
+    /**
+     * Конструктор класса.
+     *
+     * @param petService              Сервис для работы с питомцами
+     * @param userService             Сервис для работы с владельцами питомцев
+     * @param boardingRequestService  Сервис для работы с запросами на передержку питомцев
+     * @param petSitterService        Сервис для работы с пет-ситтерами
+     * @param passwordEncoder         Кодировщик паролей
+     * @param personalRequestService  Сервис для работы с персональными запросами
+     * @param reviewService           Сервис для работы с отзывами
+     */
     @Autowired
     public PetServiceMainFacadeImpl(PetService petService, PetOwnerService userService,
                                     PetBoardingRequestService boardingRequestService, PetSitterService petSitterService,
@@ -43,183 +61,298 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         this.personalRequestService = personalRequestService;
         this.reviewService = reviewService;
     }
+
+    /**
+     * Добавляет питомца в список владельца.
+     *
+     * @param pet Питомец
+     * @param owner Владелец
+     */
+    @Override
+    public void addPet(PetDto pet, PetOwner owner) {
+        petService.addPet(pet, owner);
+    }
+
+    /**
+     * Получает питомца по его идентификатору.
+     *
+     * @param petId Идентификатор питомца
+     * @return Результат работы метода из petService: Питомец с указанным идентификатором или null, если питомец не найден
+     */
     @Override
     public Pet getPetById(Long petId) {
         return petService.getPetById(petId);
     }
 
+    /**
+     * Удаляет питомца по его идентификатору.
+     *
+     * @param petId Идентификатор питомца
+     */
     @Override
     public void deletePetById(Long petId) {
         petService.deletePetById(petId);
     }
 
+    /**
+     * Получает список всех питомцев.
+     *
+     * @return Список всех питомцев
+     */
     @Override
     public List<Pet> getAllPets() {
         return petService.getAllPets();
     }
 
+    /**
+     * Получает список питомцев, принадлежащих указанному владельцу.
+     *
+     * @param owner Владелец питомцев
+     * @return Список питомцев, принадлежащих указанному владельцу
+     */
     @Override
     public List<Pet> getPetsByOwner(PetOwner owner) {
         return petService.getPetsByOwner(owner);
     }
 
+
+    /**
+     * Добавляет нового пользователя (владельца питомцев).
+     *
+     * @param user Новый пользователь
+     */
     @Override
     public void addUser(PetOwner user) {
         userService.addUser(user);
     }
 
+    /**
+     * Получает пользователя (владельца питомцев) по его идентификатору.
+     *
+     * @param id Идентификатор пользователя
+     * @return Результат работы метода из userService: Пользователь с указанным идентификатором или null, если пользователь не найден
+     */
     @Override
     public PetOwner getUserById(Long id) {
         return userService.getUserById(id);
     }
 
+    /**
+     * Удаляет пользователя (владельца питомцев) по его идентификатору.
+     *
+     * @param id Идентификатор пользователя
+     */
     @Override
     public void deleteUser(Long id) {
-        userService.deleteUser(id);
+        userService.deleteById(id);
     }
 
+    /**
+     * Получает список всех владельцев питомцев.
+     *
+     * @return Список всех владельцев питомцев
+     */
     @Override
     public List<PetOwner> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    /**
+     * Создает запрос на передержку питомца.
+     *
+     * @param user    Пользователь, создающий запрос
+     * @param pet     Питомец, для которого создается запрос
+     * @param request Данные запроса
+     * @return Созданный запрос на передержку питомца
+     */
     @Override
     public PetBoardingRequest createRequest(PetOwner user, Pet pet, PetBoardingRequestDto request) {
         return boardingRequestService.createRequest(user, pet, request);
     }
 
+    /**
+     * Находит запрос на передержку питомца по его идентификатору.
+     *
+     * @param requestId Идентификатор запроса на передержку питомца
+     * @return Результат работы метода из сервиса boardingRequestService: Запрос на передержку питомца с указанным идентификатором или null, если запрос не найден
+     */
     @Override
     public PetBoardingRequest findRequestById(Long requestId) {
         return boardingRequestService.findById(requestId);
     }
 
+
+    /**
+     * Добавляет нового пет-ситтера.
+     *
+     * @param sitter Новый пет-ситтер
+     */
     @Override
     public void addPetSitter(PetSitter sitter) {
         petSitterService.saveSitter(sitter);
     }
 
+
+    /**
+     * Получает список всех пет-ситтеров.
+     *
+     * @return Список всех пет-ситтеров
+     */
     @Override
     public List<PetSitter> getAllPetSitters() {
         return petSitterService.getAllPetSitters();
     }
 
 
-
+    /**
+     * Добавляет новые даты в календарь пет-ситтера.
+     *
+     * @param petSitter Пет-ситтер
+     * @param availableDates Строка с датами для добавления в календарь
+     */
     @Override
     public void addAvailabilityDates(PetSitter petSitter, String availableDates) {
         petSitterService.addAvailabilityDates(petSitter, availableDates);
     }
 
+    /**
+     * Находит подходящих пет-ситтеров для запроса на передержку питомца.
+     *
+     * @param request Запрос на передержку питомца
+     * @return Список объектов SuitableSitterDto, представляющих подходящих пет-ситтеров в удобном формате для вывода на страницу
+     */
     @Override
     public List<SuitableSitterDto> findSuitableSitters(PetBoardingRequest request) {
         return petSitterService.findSuitableSitters(request);
     }
 
+    /**
+     * Находит пет-ситтера по его идентификатору.
+     *
+     * @param id Идентификатор пет-ситтера
+     * @return Результат работы метода из petSitterService: пет-ситтер с указанным идентификатором или null, если не найден
+     */
     @Override
     public PetSitter findSitterById(Long id) {
         return petSitterService.getById(id);
     }
 
+    /**
+     * Находит все запросы на передержку пет-ситтера.
+     *
+     * @param sitterId Идентификатор пет-ситтера
+     * @return Список запросов на передержку пет-ситтера или empty List, если список пуст
+     */
     @Override
     public List<PetBoardingRequest> getSitterRequests(Long sitterId) {
         PetSitter sitter = petSitterService.getById(sitterId);
         if (sitter != null) {
             return sitter.getRequests();
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
+    /**
+     * Находит все запросы на передержку владельца питомцев.
+     *
+     * @param userId Идентификатор владельца питомцев
+     * @return Список запросов на передержку или empty List, если список пуст
+     */
     @Override
     public List<PetBoardingRequest> getUserRequests(Long userId) {
         PetOwner user = userService.getUserById(userId);
         if (user != null) {
             return user.getRequests();
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
+    /**
+     * Обновляет статус запроса на передержку.
+     *
+     * @param id Идентификатор запроса
+     * @param status Новый статус запроса
+     */
     @Override
     public void updateRequestStatus(Long id, RequestStatus status) {
         boardingRequestService.updateRequestStatus(id, status);
     }
 
+    /**
+     * Принимает запрос на передержку питомца.
+     *
+     * @param requestId Идентификатор запроса
+     */
     @Override
     public void acceptRequest(Long requestId) {
         petSitterService.acceptRequest(requestId);
     }
 
+
+    /**
+     * Отклоняет запрос на передержку питомца.
+     *
+     * @param requestId Идентификатор запроса
+     */
     @Override
     public void declineRequest(Long requestId) {
         petSitterService.declineRequest(requestId);
     }
 
+
+    /**
+     * Обновляет статус поступления новых заказов для пет-ситтера.
+     *
+     * @param id        Идентификатор пет-ситтера
+     * @param newOrders Новое значение статуса поступления заказов
+     */
     @Override
     public void updateTakingNewOrders(Long id, boolean newOrders) {
         petSitterService.updateTakingNewOrders(id, newOrders);
     }
 
+    /**
+     * Назначает пет-ситтера на запрос о передержке.
+     *
+     * @param requestId      Идентификатор запроса на передержку
+     * @param sitter         Пет-ситтер
+     */
     @Override
     public void assignSitter (Long requestId, PetSitter sitter) {
         boardingRequestService.assignSitter(requestId, sitter);
     }
 
-    @Override
-    public void addPet(PetDto pet, PetOwner owner) {
-        petService.addPet(pet, owner);
-    }
-
-    public static String formatAge(int age, String ageUnit) {
-        if ("years".equals(ageUnit)) {
-            return formatYears(age);
-        } else if ("months".equals(ageUnit)) {
-            return formatMonths(age);
-        } else {
-            return age + " " + ageUnit;
-        }
-    }
-
-    private static String formatYears(int years) {
-        if (years < 0) {
-            return "Некорректный возраст";
-        }
-
-        if (years >= 11 && years <= 19) {
-            return years + " лет";
-        }
-
-        int lastDigit = years % 10;
-        if (lastDigit == 1) {
-            return years + " год";
-        } else if (lastDigit >= 2 && lastDigit <= 4) {
-            return years + " года";
-        } else {
-            return years + " лет";
-        }
-    }
-
-    private static String formatMonths(int months) {
-        if (months < 0 || months >= 12) {
-            return "Некорректный возраст";
-        }
-
-        if (months >= 2 && months <= 4) {
-            return months + " месяца";
-        }
-        return months + " месяцев";
-    }
-
+    /**
+     * Получает владельца питомцев по имени.
+     *
+     * @param username Имя пользователя
+     * @return Результат работы метода из userService: владелец питомцев, соответствующий имени пользователя, или null, если пользователь не найден
+     */
     @Override
     public PetOwner getUserByUsername(String username) {
         return userService.getUserByName(username);
     }
 
+
+    /**
+     * Получает пет-ситтера по имени.
+     *
+     * @param username Имя пользователя
+     * @return Результат работы метода из petSitterService: владелец питомцев, соответствующий имени пользователя, или null, если пользователь не найден
+     */
     @Override
     public PetSitter getSitterByUsername(String username) {
         return petSitterService.getUserByName(username);
     }
 
+
+    /**
+     * Создает персональный запрос.
+     *
+     * @param requestDto Персональный запрос
+     */
     @Override
     public void makePersonalRequest(PersonalRequestDto requestDto) {
         PetOwner owner = userService.getUserById(requestDto.getUserId());
@@ -233,6 +366,13 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         userService.addPersonalRequest(owner, request);
     }
 
+    /**
+     * Удаляет пользователя с учетом его роли.
+     *
+     * @param userId Идентификатор пользователя
+     * @param userRole Роль пользователя
+     * @throws IllegalArgumentException Если роль неопознана
+     */
     @Override
     public void deleteUserByRole(String userRole, Long userId) {
         switch (userRole) {
@@ -242,6 +382,13 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         }
     }
 
+    /**
+     * Активирует аккаунт пользователя с учетом его роли.
+     *
+     * @param userId Идентификатор пользователя
+     * @param userRole Роль пользователя
+     * @throws IllegalArgumentException Если роль неопознана
+     */
     @Override
     public void activateAccountByRole(String userRole, Long userId) {
         switch (userRole) {
@@ -251,6 +398,13 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         }
     }
 
+    /**
+     * Деактивирует аккаунт пользователя с учетом его роли.
+     *
+     * @param userId Идентификатор пользователя
+     * @param userRole Роль пользователя
+     * @throws IllegalArgumentException Если роль неопознана
+     */
     @Override
     public void deactivateAccountByRole(String userRole, Long userId) {
         switch (userRole) {
@@ -258,10 +412,15 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
             case SITTER -> petSitterService.deactivateAccount(userId);
             default -> throw new IllegalArgumentException(ROLE_INVALID + userRole);
         }
-
-
     }
 
+
+    /**
+     * Создает личный кабинет владельца питомцев.
+     *
+     * @param user Владелец питомцев
+     * @return Личный кабинет пользователя
+     */
     @Override
     public PetOwnerDashboard createOwnerDashboard(PetOwner user) {
         PetOwnerDashboard ownerDashboard = new PetOwnerDashboard();
@@ -285,6 +444,12 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         return ownerDashboard;
     }
 
+    /**
+     * Создает личный кабинет пет-ситтера.
+     *
+     * @param sitter Владелец питомцев
+     * @return Личный кабинет пользователя
+     */
     @Override
     public PetSitterDashboard createSitterDashboard(PetSitter sitter) {
         PetSitterDashboard sitterDashboard = new PetSitterDashboard();
@@ -319,9 +484,14 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         return sitterDashboard;
     }
 
+    /**
+     * Создает отзыв о пет-ситтере.
+     *
+     * @param review Отзыв
+     */
     @Override
     public void createReview(ReviewDto review) {
-        PetBoardingRequest request = boardingRequestService.getRequestById(review.getRequestId());
+        PetBoardingRequest request = boardingRequestService.findById(review.getRequestId());
         PetSitter sitter = petSitterService.getById(request.getSitter().getId());
 
         request.setReviewed(true);
@@ -332,31 +502,47 @@ public class PetServiceMainFacadeImpl implements PetServiceMainFacade{
         newReview.setMessage(review.getMessage());
 
         String rating = review.getRating();
-        newReview.setRating(parseRating(rating));
+        newReview.setRating(rating.replaceAll("\\D", ""));
 
         reviewService.addReview(newReview);
         sitter.addReview(newReview);
         petSitterService.saveSitter(sitter);
     }
 
+
+    /**
+     * Удаляет отзыв о пет-ситтере.
+     *
+     * @param id Идентификатор отзыва
+     */
     @Override
     public void deleteReview(Long id) {
         reviewService.deleteReview(id);
     }
 
-    public boolean isPasswordCorrect(String enteredPassword, String actualPassword) {
-        return passwordEncoder.matches(enteredPassword, actualPassword);
-    }
 
+    /**
+     * Регистрирует нового владельца питомцев.
+     *
+     * @param user Новый пользователь
+     */
+    @Override
     public void registerPetOwner(PetOwner user) {
         userService.register(user);
     }
 
+    /**
+     * Регистрирует нового пет-ситтера.
+     *
+     * @param user Новый пользователь
+     */
+    @Override
     public void registerPetSitter(PetSitter user) {
         petSitterService.register(user);
     }
 
-    private String parseRating(String ratingString) {
-        return ratingString.replaceAll("\\D", "");
+
+    public boolean isPasswordCorrect(String enteredPassword, String actualPassword) {
+        return passwordEncoder.matches(enteredPassword, actualPassword);
     }
 }

@@ -4,6 +4,9 @@ package com.example.petsitterservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+/**
+ * Класс Отзыва
+ */
 @Entity
 public class Review {
     @Id

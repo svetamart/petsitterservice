@@ -2,9 +2,14 @@ package com.example.petsitterservice.controller.web;
 
 import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +26,17 @@ import java.util.List;
 @RequestMapping("/petSitter/dashboard")
 public class PetSitterWebController {
 
-    private static final String ERROR = "error";
+    private static final String ERROR = "notFound";
+    private static final String ACCESS_DENIED = "accessDenied";
     private static final String USER_ID = "userId";
     private static final String REDIRECT_DASHBOARD = "redirect:/petSitter/dashboard/";
-    private static final String API_DASHBOARD = "http://localhost:8080/api/petSitters/dashboard/";
+    private static final String DASHBOARD = "petSitters/dashboard/";
 
     private final RestTemplate restTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(PetSitterWebController.class);
+
+    @Value("${api.url}")
+    private String apiUrl;
 
 
     @Autowired
@@ -36,23 +46,39 @@ public class PetSitterWebController {
 
 
     @GetMapping("/{userId}")
-    @PreAuthorize("#userId == principal.id")
     public String getUserDashboard(@PathVariable Long userId, Model model) {
-        String url = API_DASHBOARD + userId;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetSitterDashboard> responseEntity = restTemplate.getForEntity(url, PetSitterDashboard.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             PetSitterDashboard user = responseEntity.getBody();
             if (user != null) {
-                List<SitterPageBoardingRequest> sitterPageRequests = user.getRequests();
-                List<SitterPageReview> sitterReviews = user.getReviews();
+                String username;
+                if (principal instanceof UserDetails) {
+                    username = ((UserDetails) principal).getUsername();
+                } else {
+                    username = principal.toString();
+                }
+                if (username.equals(user.getUsername())) {
 
-                model.addAttribute("user", user);
-                model.addAttribute("sitterPageRequests", sitterPageRequests != null ? sitterPageRequests : Collections.emptyList());
-                model.addAttribute("sitterPageReviews", sitterReviews != null ? sitterReviews : Collections.emptyList());
+                    List<SitterPageBoardingRequest> sitterPageRequests = user.getRequests();
+                    List<SitterPageReview> sitterReviews = user.getReviews();
+
+                    model.addAttribute("user", user);
+                    model.addAttribute("sitterPageRequests", sitterPageRequests != null ? sitterPageRequests : Collections.emptyList());
+                    model.addAttribute("sitterPageReviews", sitterReviews != null ? sitterReviews : Collections.emptyList());
+                return "petSitterPage";
+                } else {
+                    logger.error("Trying to access another user's page");
+                    return ACCESS_DENIED;
+                }
+            } else {
+                logger.error("User is null");
+                return ACCESS_DENIED;
             }
-            return "petSitterPage";
         } else {
             return ERROR;
         }
@@ -60,7 +86,7 @@ public class PetSitterWebController {
 
     @GetMapping("/{userId}/changeNewOrders")
     public String showChangeNewOrdersPage(@PathVariable("userId") Long userId, Model model) {
-        String url = API_DASHBOARD + userId;
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetSitter> responseEntity = restTemplate.getForEntity(url, PetSitter.class);
 
@@ -78,14 +104,14 @@ public class PetSitterWebController {
 
     @PostMapping("/changeNewOrders")
     public String changeNewOrdersStatus(@RequestParam("userId") Long userId, @RequestParam("newOrders") boolean newOrders) {
-        String url = "http://localhost:8080/api/petSitters/toggleNewOrders/" + userId + "?newOrders=" + newOrders;
+        String url = apiUrl + "petSitters/toggleNewOrders/" + userId + "?newOrders=" + newOrders;
         restTemplate.postForEntity(url, null, Void.class);
         return REDIRECT_DASHBOARD + userId;
     }
 
     @GetMapping("/{userId}/changeAvailability")
     public String showChangeAvailabilityPage(@PathVariable("userId") Long userId, Model model) {
-        String url =API_DASHBOARD + userId;
+        String url = apiUrl + DASHBOARD + userId;
 
         ResponseEntity<PetSitter> responseEntity = restTemplate.getForEntity(url, PetSitter.class);
 
@@ -104,7 +130,7 @@ public class PetSitterWebController {
 
     @PostMapping("/changeAvailability")
     public String changeAvailability(@RequestParam("userId") Long userId, @ModelAttribute AvailabilityRequest request) {
-        String url = "http://localhost:8080/api/petSitters/changeAvailability/" + userId;
+        String url = apiUrl + "petSitters/changeAvailability/" + userId;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -118,13 +144,13 @@ public class PetSitterWebController {
 
     @PostMapping("/{userId}/acceptRequest/{requestId}")
     public String acceptRequest(@PathVariable Long userId, @PathVariable Long requestId, RedirectAttributes redirectAttributes, Model model) {
-        String url = "http://localhost:8080/api/petSitters/acceptRequest/" + requestId;
+        String url = apiUrl +"petSitters/acceptRequest/" + requestId;
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            redirectAttributes.addFlashAttribute("message", "Вы приняли заявку");
+            logger.info("Request accepted");
             return REDIRECT_DASHBOARD + userId;
         } else {
-            redirectAttributes.addFlashAttribute(ERROR, "Ошибка");
+            logger.error("Error while trying to accept request");
             model.addAttribute(USER_ID, userId);
             return "cannotAcceptRequestPage";
         }
@@ -132,16 +158,16 @@ public class PetSitterWebController {
 
     @PostMapping("/{userId}/declineRequest/{requestId}")
     public String declineRequest(@PathVariable Long userId, @PathVariable Long requestId, RedirectAttributes redirectAttributes) {
-        String url = "http://localhost:8080/api/petSitters/declineRequest/" + requestId;
+        String url = apiUrl +"petSitters/declineRequest/" + requestId;
         ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
         if (response.getStatusCode() == HttpStatus.OK) {
-            redirectAttributes.addFlashAttribute("message", "Заявка отклонена");
+            logger.info("Request declined");
+            return REDIRECT_DASHBOARD + userId;
         } else {
-            redirectAttributes.addFlashAttribute(ERROR, "Failed to decline request");
+            logger.error("Error while trying to decline request");
+            return ERROR;
         }
-        return REDIRECT_DASHBOARD + userId;
     }
-
 }
 
 

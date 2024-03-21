@@ -1,5 +1,8 @@
 package com.example.petsitterservice.model.dto;
 
+/**
+ * Класс для передачи данных из формы создания запроса на передержку
+ */
 public class PetBoardingRequestDto {
 
     private Long userId;

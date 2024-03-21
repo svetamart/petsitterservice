@@ -3,6 +3,7 @@ package com.example.petsitterservice.config;
 
 import com.example.petsitterservice.service.CustomUserDetailsService;
 import com.example.petsitterservice.utility.CustomAuthenticationManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,18 +55,23 @@ public class SecurityConfig {
                                 .requestMatchers("/login/**").permitAll()
                                 .requestMatchers("/api/registerOwner").permitAll()
                                 .requestMatchers("/api/registerSitter").permitAll()
-                                .requestMatchers("/api/login").permitAll()
+                                .requestMatchers("/api/login/**").permitAll()
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers("/api/petSitters/**").permitAll()
+                                // .requestMatchers("/api/logout/**").permitAll()
                                 .anyRequest().authenticated())
-//                .logout(logout -> logout
-//                        .logoutUrl("/logout")
-//                        .logoutSuccessUrl("/login")
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID")
-//                        .permitAll()
-//                )
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/success")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
                 .httpBasic(withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer
@@ -74,5 +80,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }

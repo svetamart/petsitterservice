@@ -1,5 +1,9 @@
 package com.example.petsitterservice.model.dto;
 
+/**
+ * Класс для передачи данных при аутентификации пользователя.
+ * Содержит сообщение, роль пользователя и идентификатор пользователя.
+ */
 
 public class AuthResponse {
     private String message;

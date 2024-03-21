@@ -2,7 +2,9 @@ package com.example.petsitterservice.model;
 
 import jakarta.persistence.*;
 
-
+/**
+ * Класс запроса на передержку
+ */
 @Entity
 public class PetBoardingRequest {
     @Id

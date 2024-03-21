@@ -10,4 +10,4 @@ spring:
     show-sql: true
 
 api:
-  url: "http://localhost:8080/api/users/"
+  url: "http://localhost:8080/api/"

@@ -2,6 +2,11 @@ package com.example.petsitterservice.model.dto;
 
 import com.example.petsitterservice.model.Review;
 
+/**
+ * Класс для отображения отзывов  в личном кабинете пет-ситтера
+ */
+
+
 public class SitterPageReview {
 
     private String userName;

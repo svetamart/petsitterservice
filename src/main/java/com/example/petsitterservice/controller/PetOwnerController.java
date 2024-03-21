@@ -4,6 +4,7 @@ import com.example.petsitterservice.model.*;
 import com.example.petsitterservice.model.dto.*;
 import com.example.petsitterservice.service.PetServiceMainFacadeImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class PetOwnerController {
             summary = "Поиск по имени",
             description = "Позволяет найти владельца питомца по юзернейму"
     )
-    // @PreAuthorize("#userId == principal.id")
-    public ResponseEntity<PetOwner> getUserByUsername(@PathVariable String username) {
+    public ResponseEntity<PetOwner> getUserByUsername(
+            @PathVariable @Parameter(description = "Имя пользователя") String username) {
         PetOwner user = mainService.getUserByUsername(username);
 
         if (user != null) {
@@ -47,7 +48,8 @@ public class PetOwnerController {
             summary = "Личный кабинет",
             description = "Выдает личный кабинет владельца питомца"
     )
-    public ResponseEntity<PetOwnerDashboard> getUserDashboard(@PathVariable Long userId) {
+    public ResponseEntity<PetOwnerDashboard> getUserDashboard(
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId) {
         PetOwner user = mainService.getUserById(userId);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,7 +64,8 @@ public class PetOwnerController {
             summary = "Список питомцев",
             description = "Выводит список питомцев пользователя"
     )
-    public ResponseEntity<List<Pet>> getPets(@PathVariable Long userId) {
+    public ResponseEntity<List<Pet>> getPets(
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId) {
         PetOwner user = mainService.getUserById(userId);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,7 +80,9 @@ public class PetOwnerController {
             summary = "Добавление питомца",
             description = "Добавляет питомца в список пользователя"
     )
-    public ResponseEntity<String> addPet(@PathVariable Long userId, @RequestBody PetDto pet) {
+    public ResponseEntity<String> addPet(
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId,
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO, из которого строится объект питомца") PetDto pet) {
         Long id = pet.getUserId();
         PetOwner user = mainService.getUserById(id);
         if (user == null) {
@@ -94,8 +99,9 @@ public class PetOwnerController {
             summary = "Создание запроса на передержку",
             description = "Создает запрос на передержку домашнего животного"
     )
-    public ResponseEntity<PetBoardingRequest> createPetBoardingRequest(@PathVariable Long userId,
-                                                                              @RequestBody PetBoardingRequestDto requestDto) {
+    public ResponseEntity<PetBoardingRequest> createPetBoardingRequest(
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId,
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO, из которого строится запрос на передержку") PetBoardingRequestDto requestDto) {
 
         PetOwner user = mainService.getUserById(userId);
         Pet pet = mainService.getPetById(requestDto.getPetId());
@@ -109,7 +115,7 @@ public class PetOwnerController {
             description = "Находит пет-ситтеров, подходящих под требования запроса о передержке"
     )
     public ResponseEntity<List<SuitableSitterDto>> findSuitableSitters(
-            @PathVariable Long requestId) {
+            @PathVariable @Parameter(description = "Идентификатор запроса на передержку") Long requestId) {
 
         PetBoardingRequest request = mainService.findRequestById(requestId);
         List<SuitableSitterDto> suitableSitters = mainService.findSuitableSitters(request);
@@ -123,7 +129,9 @@ public class PetOwnerController {
             summary = "Выбор пет-ситтера",
             description = "Позволяет владельцу питомца выбрать понравившегося пет-ситтера и отправить ему запрос"
     )
-    public ResponseEntity<String> chooseSitter(@PathVariable Long requestId, @PathVariable Long sitterId) {
+    public ResponseEntity<String> chooseSitter(
+            @PathVariable @Parameter(description = "Идентификатор запроса на передержку") Long requestId,
+            @PathVariable @Parameter(description = "Идентификатор пет-ситтера") Long sitterId) {
         PetSitter sitter = mainService.findSitterById(sitterId);
         if (sitter != null) {
             mainService.assignSitter(requestId, sitter);
@@ -137,7 +145,9 @@ public class PetOwnerController {
             summary = "Персональная заявка",
             description = "Позволяет пользователю создать персональную заявку"
     )
-    public ResponseEntity<String> makePersonalRequest (@PathVariable Long userId, @RequestBody PersonalRequestDto requestDto) {
+    public ResponseEntity<String> makePersonalRequest (
+            @PathVariable @Parameter(description = "Идентификатор пользователя") Long userId,
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO, из которого строится персональный запрос") PersonalRequestDto requestDto) {
         mainService.makePersonalRequest(requestDto);
         return new ResponseEntity<>("Personal request successfully created", HttpStatus.OK);
     }
@@ -147,7 +157,8 @@ public class PetOwnerController {
             summary = "Добавление отзыва",
             description = "Позволяет пользователю оставить отзыв о пет-ситтере"
     )
-    public ResponseEntity<String> addReview(@RequestBody ReviewDto review) {
+    public ResponseEntity<String> addReview(
+            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO, из которого строится отзыв") ReviewDto review) {
         mainService.createReview(review);
         return ResponseEntity.ok("Review successfully added.");
     }

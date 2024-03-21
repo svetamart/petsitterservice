@@ -1,8 +1,11 @@
 package com.example.petsitterservice.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+/**
+ * Класс персональной заявки
+ */
 
 @Entity
 public class PersonalRequest {
@@ -12,10 +15,12 @@ public class PersonalRequest {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private PetOwner owner;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "request_id")
+    @JsonIgnore
     private PetBoardingRequest request;
 
     @Column(nullable = false)

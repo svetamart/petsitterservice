@@ -1,5 +1,8 @@
 package com.example.petsitterservice.model.dto;
 
+/**
+ * Класс для передачи данных из формы создания персональной заявки
+ */
 public class PersonalRequestDto {
 
     Long userId;

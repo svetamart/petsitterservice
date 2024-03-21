@@ -1,5 +1,8 @@
 package com.example.petsitterservice.model.dto;
 
+/**
+ * Класс для передачи данных из формы регистрации владельца питомцев
+ */
 
 public class OwnerRequest {
     private String username;

@@ -3,6 +3,10 @@ package com.example.petsitterservice.model.dto;
 import com.example.petsitterservice.model.PetBoardingRequest;
 import com.example.petsitterservice.model.RequestStatus;
 
+/**
+ * Класс для отображения запросов на передержку в личном кабинете пет-ситтера
+ */
+
 public class SitterPageBoardingRequest {
 
     private Long id;
