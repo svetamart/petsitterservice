@@ -64,19 +64,4 @@ public class LoginController {
         authService.registerPetSitter(user);
         return ResponseEntity.ok("Pet sitter registered successfully");
     }
-
-
-//    @PostMapping("/logout")
-//    @Operation(
-//            summary = "Выход из системы",
-//            description = "Позволяет пользователю выйти из системы"
-//    )
-//    public ResponseEntity<String> logout(HttpServletRequest request) {
-//        if (request.getSession(false) != null) {
-//            HttpSession session = request.getSession(false);
-//            session.invalidate();
-//        }
-//        SecurityContextHolder.clearContext();
-//        return ResponseEntity.ok("Logout successful");
-//    }
 }

@@ -59,11 +59,10 @@ public class SecurityConfig {
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/api/users/**").permitAll()
                                 .requestMatchers("/api/petSitters/**").permitAll()
-                                // .requestMatchers("/api/logout/**").permitAll()
                                 .anyRequest().authenticated())
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/success")
+                        .defaultSuccessUrl("/auth")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")

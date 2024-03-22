@@ -16,6 +16,13 @@ public class SitterPageReview {
     private String endDate;
     private String message;
 
+    /**
+     * Преобразует объект типа Review в объект типа SitterPageReview.
+     *
+     * @param review Отзыв
+     * @return Объект типа SitterPageReview для отображения на странице пет-ситтера
+     */
+
 
     public static SitterPageReview fromReview(Review review) {
         SitterPageReview sitterPageReview = new SitterPageReview();

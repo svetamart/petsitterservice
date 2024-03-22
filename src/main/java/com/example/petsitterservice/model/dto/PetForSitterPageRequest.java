@@ -129,6 +129,13 @@ public class PetForSitterPageRequest {
         }
     }
 
+    /**
+     * Преобразует объект типа Pet в объект типа PetForSitterPageRequest.
+     *
+     * @param pet Питомец
+     * @return Объект типа PetForSitterPageRequest для вывода в карточку запросов на странице пет-ситтера
+     */
+
     public static PetForSitterPageRequest fromPet(Pet pet) {
         PetForSitterPageRequest petRequest = new PetForSitterPageRequest();
         petRequest.setName(pet.getName());

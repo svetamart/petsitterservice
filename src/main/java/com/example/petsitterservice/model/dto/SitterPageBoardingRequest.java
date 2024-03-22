@@ -20,7 +20,12 @@ public class SitterPageBoardingRequest {
     private String comments;
     private RequestStatus status;
 
-
+    /**
+     * Преобразует объект типа PetBoardingRequest в объект типа SitterPageBoardingRequest.
+     *
+     * @param petBoardingRequest Запрос на передержку, который необходимо преобразовать
+     * @return Объект типа SitterPageBoardingRequest для вывода в карточку запросов на странице пет-ситтера
+     */
     public static SitterPageBoardingRequest fromPetBoardingRequest(PetBoardingRequest petBoardingRequest) {
         SitterPageBoardingRequest sitterPageBoardingRequest = new SitterPageBoardingRequest();
         sitterPageBoardingRequest.setId(petBoardingRequest.getId());

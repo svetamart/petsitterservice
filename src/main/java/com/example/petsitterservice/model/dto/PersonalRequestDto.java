@@ -43,13 +43,4 @@ public class PersonalRequestDto {
         this.phone = phone;
     }
 
-    @Override
-    public String toString() {
-        return "PersonalRequestDto{" +
-                "userId=" + userId +
-                ", requestId=" + requestId +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
-    }
 }

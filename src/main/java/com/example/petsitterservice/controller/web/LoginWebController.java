@@ -52,8 +52,8 @@ public class LoginWebController {
         return LOGIN;
     }
 
-    @GetMapping("/success")
-        public String success(Model model){
+    @GetMapping("/auth")
+        public String auth(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String username;
@@ -145,17 +145,4 @@ public class LoginWebController {
             return ERROR;
         }
     }
-
-
-//    @GetMapping ("/logout")
-//    public String logout() {
-//        logger.info("logout web controller");
-//        String logoutUrl = "http://localhost:8080/api/logout";
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-//        restTemplate.postForEntity(logoutUrl, requestEntity, String.class);
-//        return REDIRECT_LOGIN;
-//    }
 }

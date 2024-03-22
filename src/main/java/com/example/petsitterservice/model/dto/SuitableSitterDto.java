@@ -20,6 +20,13 @@ public class SuitableSitterDto {
     private int dailyRate;
     private int hourlyRate;
 
+    /**
+     * Преобразует объект типа PetSitter в объект типа SuitableSitterDto.
+     *
+     * @param sitter Пет-ситтер
+     * @return Объект типа SuitableSitterDto для отображения на странице с подходящими под запрос пет-ситтерами
+     */
+
     public static SuitableSitterDto fromSitter(PetSitter sitter) {
         SuitableSitterDto petSitter = new SuitableSitterDto();
         petSitter.setId(sitter.getId());

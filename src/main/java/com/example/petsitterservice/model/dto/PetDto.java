@@ -95,17 +95,4 @@ public class PetDto {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-    @Override
-    public String toString() {
-        return "PetDto{" +
-                "name='" + name + '\'' +
-                ", species='" + species + '\'' +
-                ", size='" + size + '\'' +
-                ", age=" + age +
-                ", ageUnit='" + ageUnit + '\'' +
-                ", gender='" + gender + '\'' +
-                ", sterilized=" + sterilized +
-                '}';
-    }
 }

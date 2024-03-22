@@ -129,6 +129,14 @@ public class OwnerPageBoardingRequest {
                 '}';
     }
 
+    /**
+     * Преобразует объект типа PetBoardingRequest в объект типа OwnerPageBoardingRequest.
+     * Если запрос находится в статусе "Принят", номер телефона ситтера будет доступен.
+     * В остальных случаях номер телефона скрыт с помощью звездочек, и видны только последние четыре цифры.
+     *
+     * @param petBoardingRequest Запрос на передержку, который необходимо преобразовать.
+     * @return Объект типа OwnerPageBoardingRequest для вывода в карточку запросов на странице владельца питомца.
+     */
     public static OwnerPageBoardingRequest fromPetBoardingRequest(PetBoardingRequest petBoardingRequest) {
         OwnerPageBoardingRequest ownerPageBoardingRequest = new OwnerPageBoardingRequest();
         ownerPageBoardingRequest.setPetName(petBoardingRequest.getPet().getName());
